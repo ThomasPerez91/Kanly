@@ -1,0 +1,36 @@
+import env from '#start/env'
+import { defineConfig, services } from '@adonisjs/ally'
+
+const allyConfig = defineConfig({
+  discord: services.discord({
+    clientId: env.get('DISCORD_CLIENT_ID') || '',
+    clientSecret: env.get('DISCORD_CLIENT_SECRET') || '',
+    callbackUrl: env.get('DISCORD_CALLBACK_URL') || '',
+  }),
+  facebook: services.facebook({
+    clientId: env.get('FACEBOOK_CLIENT_ID') || '',
+    clientSecret: env.get('FACEBOOK_CLIENT_SECRET') || '',
+    callbackUrl: env.get('FACEBOOK_CALLBACK_URL') || '',
+  }),
+  github: services.github({
+    clientId: env.get('GITHUB_CLIENT_ID') || '',
+    clientSecret: env.get('GITHUB_CLIENT_SECRET') || '',
+    callbackUrl: env.get('GITHUB_CALLBACK_URL') || '',
+  }),
+  google: services.google({
+    clientId: env.get('GOOGLE_CLIENT_ID') || '',
+    clientSecret: env.get('GOOGLE_CLIENT_SECRET') || '',
+    callbackUrl: env.get('GOOGLE_CALLBACK_URL') || '',
+  }),
+  linkedin: services.linkedin({
+    clientId: env.get('LINKEDIN_CLIENT_ID') || '',
+    clientSecret: env.get('LINKEDIN_CLIENT_SECRET') || '',
+    callbackUrl: env.get('LINKEDIN_CALLBACK_URL') || '',
+  }),
+})
+
+export default allyConfig
+
+declare module '@adonisjs/ally/types' {
+  interface SocialProviders extends InferSocialProviders<typeof allyConfig> {}
+}

@@ -34,5 +34,26 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_PORT: Env.schema.number(),
   DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
-  DB_DATABASE: Env.schema.string()
+  DB_DATABASE: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring ally package
+  |----------------------------------------------------------
+  */
+  DISCORD_CLIENT_ID: Env.schema.string.optional(),
+  DISCORD_CLIENT_SECRET: Env.schema.string.optional(),
+  DISCORD_CALLBACK_URL: Env.schema.string.optional(),
+  FACEBOOK_CLIENT_ID: Env.schema.string.optional(),
+  FACEBOOK_CLIENT_SECRET: Env.schema.string.optional(),
+  FACEBOOK_CALLBACK_URL: Env.schema.string.optional(),
+  GITHUB_CLIENT_ID: Env.schema.string.optional(),
+  GITHUB_CLIENT_SECRET: Env.schema.string.optional(),
+  GITHUB_CALLBACK_URL: Env.schema.string.optional(),
+  GOOGLE_CLIENT_ID: Env.schema.string.optional(),
+  GOOGLE_CLIENT_SECRET: Env.schema.string.optional(),
+  GOOGLE_CALLBACK_URL: Env.schema.string.optional(),
+  LINKEDIN_CLIENT_ID: Env.schema.string.optional(),
+  LINKEDIN_CLIENT_SECRET: Env.schema.string.optional(),
+  LINKEDIN_CALLBACK_URL: Env.schema.string.optional(),
 })

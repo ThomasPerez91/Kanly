@@ -1,6 +1,8 @@
 /// <reference path="../../adonisrc.ts" />
 /// <reference path="../../config/inertia.ts" />
 
+import '@unocss/reset/tailwind.css'
+import '@unocss/reset/tailwind-compat.css'
 import 'virtual:uno.css'
 import '../css/app.css'
 import { hydrateRoot } from 'react-dom/client'

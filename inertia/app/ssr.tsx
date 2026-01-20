@@ -1,3 +1,7 @@
+import '@unocss/reset/tailwind.css'
+import '@unocss/reset/tailwind-compat.css'
+import 'virtual:uno.css'
+
 import ReactDOMServer from 'react-dom/server'
 import { createInertiaApp } from '@inertiajs/react'
 

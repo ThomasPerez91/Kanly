@@ -6,21 +6,25 @@ const allyConfig = defineConfig({
     clientId: env.get('DISCORD_CLIENT_ID'),
     clientSecret: env.get('DISCORD_CLIENT_SECRET'),
     callbackUrl: env.get('DISCORD_CALLBACK_URL'),
+    scopes: ['identify', 'email'],
   }),
   github: services.github({
     clientId: env.get('GITHUB_CLIENT_ID'),
     clientSecret: env.get('GITHUB_CLIENT_SECRET'),
     callbackUrl: env.get('GITHUB_CALLBACK_URL'),
+    scopes: ['user:email'],
   }),
   google: services.google({
     clientId: env.get('GOOGLE_CLIENT_ID'),
     clientSecret: env.get('GOOGLE_CLIENT_SECRET'),
     callbackUrl: env.get('GOOGLE_CALLBACK_URL'),
+    scopes: ['openid', 'profile', 'email'],
   }),
   linkedin: services.linkedin({
     clientId: env.get('LINKEDIN_CLIENT_ID'),
     clientSecret: env.get('LINKEDIN_CLIENT_SECRET'),
     callbackUrl: env.get('LINKEDIN_CALLBACK_URL'),
+    scopes: ['openid', 'profile', 'email'],
   }),
 })
 

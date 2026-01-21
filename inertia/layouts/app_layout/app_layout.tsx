@@ -38,7 +38,7 @@ export const AppLayout: FC<AppLayoutProps> = ({ children, title }) => {
         <div className="py-4 sm:py-6">
           <header className="mb-4 flex items-center justify-between">
             <Link href="/" className="text-sm font-800 tracking-tight">
-              Taskify
+              Kanly
             </Link>
 
             {isAuthenticated ? (

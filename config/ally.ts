@@ -20,7 +20,7 @@ const allyConfig = defineConfig({
     callbackUrl: env.get('GOOGLE_CALLBACK_URL'),
     scopes: ['openid', 'profile', 'email'],
   }),
-  linkedin: services.linkedin({
+  linkedin: services.linkedinOpenidConnect({
     clientId: env.get('LINKEDIN_CLIENT_ID'),
     clientSecret: env.get('LINKEDIN_CLIENT_SECRET'),
     callbackUrl: env.get('LINKEDIN_CALLBACK_URL'),

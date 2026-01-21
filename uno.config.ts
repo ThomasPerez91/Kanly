@@ -28,26 +28,13 @@ export default defineConfig({
 
   theme: {
     colors: {
-      bg: {
-        DEFAULT: '#F8FAFC',
-        dark: '#0B1220',
-      },
-      surface: {
-        DEFAULT: '#FFFFFF',
-        dark: '#0F1A2B',
-      },
-      border: {
-        DEFAULT: '#E2E8F0',
-        dark: '#22314A',
-      },
-      text: {
-        'DEFAULT': '#0F172A',
-        'muted': '#475569',
-        'dark': '#E5E7EB',
-        'muted-dark': '#9CA3AF',
-      },
+      'bg': '#F6F8FC',
+      'surface': '#FFFFFF',
+      'text': '#0F172A',
+      'text-muted': '#475569',
+      'border': '#E6EAF2',
 
-      brand: {
+      'brand': {
         50: '#EEF2FF',
         100: '#E0E7FF',
         200: '#C7D2FE',
@@ -60,66 +47,75 @@ export default defineConfig({
         900: '#312E81',
       },
 
-      success: {
-        50: '#ECFDF5',
-        600: '#16A34A',
-        700: '#15803D',
+      'accent': {
+        500: '#06B6D4',
+        600: '#0891B2',
       },
-      warning: {
-        50: '#FFFBEB',
-        600: '#D97706',
-        700: '#B45309',
-      },
-      danger: {
-        50: '#FEF2F2',
+
+      'danger': {
+        500: '#EF4444',
         600: '#DC2626',
-        700: '#B91C1C',
       },
     },
+    borderRadius: {
+      xl: '16px',
+      lg: '14px',
+    },
   },
+  shortcuts: [
+    // layout
+    ['container-app', 'mx-auto w-full max-w-6xl px-4 sm:px-6'],
+    ['page', 'min-h-[calc(100vh-64px)]'],
 
-  shortcuts: {
-    // --- Layout / Surfaces ---
-    'app-shell': 'min-h-screen bg-bg text-text dark:(bg-bg-dark text-text-dark)',
-    'container-app': 'mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8',
-    'page': 'container-app py-10',
+    // typography
+    ['h1', 'text-3xl sm:text-5xl font-900 tracking-tight text-text'],
+    ['h2', 'text-xl sm:text-2xl font-900 text-text'],
+    ['muted', 'text-sm sm:text-base text-text-muted'],
 
-    'card':
-      'rounded-xl bg-surface border border-border shadow-sm dark:(bg-surface-dark border-border-dark)',
-    'card-hover': 'card transition hover:shadow-md',
-    'divider': 'h-px w-full bg-border dark:bg-border-dark',
+    // surfaces
+    ['card', 'bg-surface border border-border rounded-xl shadow-[0_10px_30px_rgba(15,23,42,0.08)]'],
 
-    // --- Typography ---
-    'h1': 'text-3xl sm:text-4xl font-700 tracking-tight',
-    'h2': 'text-2xl font-700 tracking-tight',
-    'muted': 'text-sm text-text-muted dark:text-text-muted-dark',
+    // navbar
+    ['navbar-home', 'sticky top-0 z-40 bg-bg/80 backdrop-blur border-b border-border'],
+    ['navbar-link', 'text-sm font-700 text-text-muted hover:text-text transition'],
 
-    // --- Focus ring (accessibilité) ---
-    'focus-ring':
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-bg dark:focus-visible:ring-offset-bg-dark',
+    // divider
+    ['divider', 'h-px w-full bg-border'],
 
-    // --- Buttons ---
-    'btn':
-      'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-600 transition disabled:(opacity-60 cursor-not-allowed) focus-ring',
-    'btn-primary': 'btn bg-brand-600 text-white hover:bg-brand-700',
-    'btn-secondary':
-      'btn bg-gray-100 text-text hover:bg-gray-200 dark:(bg-white/10 text-text-dark hover:bg-white/15)',
-    'btn-ghost': 'btn bg-transparent hover:bg-gray-100 dark:hover:bg-white/10',
-    'btn-danger': 'btn bg-danger-600 text-white hover:bg-danger-700',
+    // inputs
+    ['label', 'block mb-1 text-sm font-700 text-text'],
+    [
+      'input',
+      'w-full h-11 px-3 rounded-lg bg-surface border border-border text-text placeholder:text-text-muted/70 outline-none transition focus:(border-brand-500 ring-4 ring-brand-500/15)',
+    ],
+    ['error', 'mt-1 text-xs text-danger-600'],
 
-    // tailles boutons
-    'btn-sm': 'px-3 py-1.5 text-xs rounded-md',
-    'btn-lg': 'px-5 py-3 text-base rounded-xl',
+    // buttons
+    ['shadow-soft', 'shadow-[0_10px_30px_rgba(15,23,42,0.10)]'],
+    [
+      'spinner',
+      'inline-block h-4 w-4 rounded-full border-2 border-current border-r-transparent animate-spin',
+    ],
+    ['btn-label', 'leading-none'],
 
-    // --- Inputs ---
-    'input':
-      'w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:(ring-2 ring-brand-500 border-brand-500) dark:(bg-surface-dark border-border-dark text-text-dark)',
-    'label': 'block text-sm font-600 mb-1',
-    'error': 'mt-1 text-sm text-danger-600',
+    ['btn-label', 'leading-none whitespace-nowrap'],
+    [
+      'btn-base',
+      'inline-flex items-center justify-center gap-2 select-none whitespace-nowrap rounded-xl font-800 tracking-tight transition active:translate-y-[1px] disabled:(opacity-60 cursor-not-allowed) focus:outline-none focus:(ring-4 ring-brand-500/20)',
+    ],
 
-    // --- Navbar (home) ---
-    'navbar-home': 'w-full py-4',
-    'navbar-link':
-      'text-sm font-600 text-text/80 hover:text-text dark:(text-text-dark/80 hover:text-text-dark)',
-  },
+    // sizes
+    ['btn-sm', 'h-9 px-3 text-sm'],
+    ['btn-md', 'h-11 px-4 text-sm sm:text-base'],
+    ['btn-lg', 'h-12 px-5 text-base'],
+
+    // variants
+    ['btn-primary', 'bg-brand-600 text-white hover:bg-brand-700'],
+    ['btn-secondary', 'bg-brand-50 text-brand-700 border border-brand-100 hover:bg-brand-100'],
+    ['btn-ghost', 'bg-transparent text-text border border-transparent hover:bg-black/5'],
+    ['btn-danger', 'bg-danger-600 text-white hover:bg-danger-500'],
+
+    // oauth neutral
+    ['btn-oauth', 'bg-surface text-text border border-border hover:bg-bg'],
+  ],
 })

@@ -1,5 +1,7 @@
 import type { FC } from 'react'
-import type { ButtonProps, ButtonVariant, ButtonSize } from './button_type'
+import { Link } from '@inertiajs/react'
+import type { ButtonLinkProps } from './button_link_type'
+import type { ButtonSize, ButtonVariant } from '~/components/ui/button/button_type'
 
 const variantClass: Record<ButtonVariant, string> = {
   primary: 'btn-primary',
@@ -15,7 +17,8 @@ const sizeClass: Record<ButtonSize, string> = {
   lg: 'btn-lg',
 }
 
-export const Button: FC<ButtonProps> = ({
+export const ButtonLink: FC<ButtonLinkProps> = ({
+  href,
   label,
   iconLeft,
   iconRight,
@@ -24,30 +27,35 @@ export const Button: FC<ButtonProps> = ({
   fullWidth = false,
   loading = false,
   elevated = false,
-  disabled,
-  type = 'button',
   className,
-  ...rest
+  preserveScroll,
+  replace,
+  only,
+  headers,
 }) => {
-  const isDisabled = disabled || loading
+  const isDisabled = loading
 
   return (
-    <button
-      type={type}
-      disabled={isDisabled}
+    <Link
+      href={href}
+      preserveScroll={preserveScroll}
+      replace={replace}
+      only={only}
+      headers={headers}
       className={[
         'btn-base',
         sizeClass[size],
         variantClass[variant],
+        'no-underline align-middle',
         fullWidth ? 'w-full' : '',
         elevated ? 'shadow-soft' : '',
+        isDisabled ? 'pointer-events-none opacity-60' : '',
         className ?? '',
       ].join(' ')}
-      {...rest}
     >
       {loading ? <span className="spinner" /> : iconLeft}
       {label ? <span className="btn-label">{label}</span> : null}
       {iconRight}
-    </button>
+    </Link>
   )
 }

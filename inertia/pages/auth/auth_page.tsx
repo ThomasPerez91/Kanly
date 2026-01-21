@@ -40,34 +40,7 @@ export default function AuthPage() {
   return (
     <div className="page">
       <div className="mx-auto w-full max-w-md">
-        <div className="mb-4 flex items-center justify-center gap-6">
-          <Link
-            href="/auth?mode=login"
-            preserveScroll
-            className={[
-              'text-sm font-700 transition',
-              mode === 'login' ? 'text-text' : 'text-text-muted hover:text-text',
-            ].join(' ')}
-            onClick={() => setMode('login')}
-          >
-            Login
-          </Link>
-
-          <Link
-            href="/auth?mode=register"
-            preserveScroll
-            className={[
-              'text-sm font-700 transition',
-              mode === 'register' ? 'text-text' : 'text-text-muted hover:text-text',
-            ].join(' ')}
-            onClick={() => setMode('register')}
-          >
-            Register
-          </Link>
-        </div>
-
         {mode === 'login' ? <LoginForm /> : <RegisterForm />}
-
         <p className="muted mt-4 text-center">
           {mode === 'login' ? (
             <>

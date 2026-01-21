@@ -17,7 +17,6 @@ export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('login')
 
   useEffect(() => {
-    // SSR-safe guard (no redirect on SSR)
     requireGuest()
 
     const params = new URLSearchParams(window.location.search)
@@ -25,7 +24,6 @@ export default function AuthPage() {
   }, [requireGuest])
 
   useEffect(() => {
-    // Keep in sync if user navigates via back/forward
     const onPopState = () => {
       const params = new URLSearchParams(window.location.search)
       setMode(normalizeMode(params.get('mode')))

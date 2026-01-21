@@ -3,8 +3,8 @@ import type { OAuthButtonsProps } from './oauth_buttons_type'
 import { Button } from '~/components/ui/button/button'
 
 import { FaGithub, FaLinkedin } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
 import { SiDiscord } from 'react-icons/si'
+import { FcGoogle } from 'react-icons/fc'
 
 type ProviderConfig = {
   key: 'google' | 'github' | 'discord' | 'linkedin'
@@ -17,27 +17,27 @@ const providers: ProviderConfig[] = [
   {
     key: 'google',
     label: 'Continue with Google',
-    icon: <FcGoogle />,
+    icon: <FcGoogle size={18} />,
     buttonClassName:
       'bg-white text-[#DB4437] border border-[#E5E7EB] hover:bg-[#F9FAFB] hover:border-[#D1D5DB]',
   },
   {
     key: 'github',
     label: 'Continue with GitHub',
-    icon: <FaGithub />,
-    buttonClassName: 'bg-[#111827] text-white hover:bg-[#0B1220] border border-[#111827]',
+    icon: <FaGithub size={18} />,
+    buttonClassName: 'bg-[#111827] text-white border border-[#111827] hover:bg-[#0B1220]',
   },
   {
     key: 'discord',
     label: 'Continue with Discord',
-    icon: <SiDiscord />,
-    buttonClassName: 'bg-[#5865F2] text-white hover:bg-[#4752C4] border border-[#5865F2]',
+    icon: <SiDiscord size={18} />,
+    buttonClassName: 'bg-[#5865F2] text-white border border-[#5865F2] hover:bg-[#4752C4]',
   },
   {
     key: 'linkedin',
     label: 'Continue with LinkedIn',
-    icon: <FaLinkedin />,
-    buttonClassName: 'bg-[#0A66C2] text-white hover:bg-[#084E96] border border-[#0A66C2]',
+    icon: <FaLinkedin size={18} />,
+    buttonClassName: 'bg-[#0A66C2] text-white border border-[#0A66C2] hover:bg-[#084E96]',
   },
 ]
 
@@ -51,13 +51,14 @@ export const OAuthButtons: FC<OAuthButtonsProps> = ({ disabled = false }) => {
           className={disabled ? 'pointer-events-none opacity-60' : ''}
         >
           <Button
-            variant="secondary"
+            variant="oauth"
             fullWidth
             disabled={disabled}
             label={provider.label}
             iconLeft={provider.icon}
             type="button"
             className={provider.buttonClassName}
+            elevated
           />
         </a>
       ))}

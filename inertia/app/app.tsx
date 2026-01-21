@@ -14,9 +14,11 @@ import type { ComponentType, ReactNode } from 'react'
 import { HomeLayout } from '~/layouts/home_layout/home_layout'
 import { AppLayout } from '~/layouts/app_layout/app_layout'
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'Kanly'
 
-type AnyPage = ComponentType<any>
+type AnyPage = ComponentType<any> & {
+  layout?: (page: ReactNode) => ReactNode
+}
 
 const withDefaultLayout = (name: string, page: ReactNode) => {
   const normalized = name.toLowerCase()
@@ -41,8 +43,6 @@ createInertiaApp({
     const Page = ((mod as any)?.default ?? mod) as AnyPage
 
     const WrappedPage: AnyPage = (props: any) => {
-      // optional per-page layout override if you add it later
-      // @ts-ignore
       const layout = Page.layout
       if (typeof layout === 'function') return layout(<Page {...props} />)
 

@@ -24,6 +24,7 @@ export const Navbar: FC<NavbarProps> = ({ brand = 'Kanly' }) => {
             variant="primary"
             size="sm"
             label="Get started"
+            className="rounded-none"
           />
         </nav>
       </div>

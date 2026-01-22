@@ -7,6 +7,7 @@ export function workspaceToPublicDto(workspace: Workspace): WorkspacePublicDTO {
     id: workspace.id,
     name: workspace.name,
     slug: workspace.slug,
+    avatarUrl: workspace.avatarUrl,
     role: workspace.$extras.role as WorkspaceUserRoles,
   }
 }

@@ -1,10 +1,10 @@
 import router from '@adonisjs/core/services/router'
 import { AuthProviders } from '#enums/auth_providers'
 const AuthController = () => import('#controllers/auth_controller')
+const WorkspacesController = () => import('#controllers/workspaces_controller')
 
 router.on('/').renderInertia('home')
 router.on('/auth').renderInertia('auth/auth_page')
-router.on('/dashboard').renderInertia('dashboard/dashboard')
 
 const providerRegex = new RegExp(Object.values(AuthProviders).join('|'))
 
@@ -19,3 +19,7 @@ router
     router.get('/:provider/callback', [AuthController, 'callback']).where('provider', providerRegex)
   })
   .prefix('/auth')
+
+  router
+  .get('/dashboard', [WorkspacesController, 'index'])
+  .middleware(['auth'])

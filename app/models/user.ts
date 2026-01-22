@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, hasMany, manyToany } from '@adonisjs/lucid/orm'
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import hash from '@adonisjs/core/services/hash'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 
 import SocialAccount from '#models/social_account'
+import Workspace from '#models/workspace'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -22,10 +23,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare email: string
 
-  /**
-   * Nullable pour OAuth (un user peut exister sans password).
-   * Le AuthFinder hash automatiquement si une valeur est définie.
-   */
   @column({ serializeAs: null })
   declare password: string | null
 
@@ -37,6 +34,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => SocialAccount)
   declare socialAccounts: HasMany<typeof SocialAccount>
+
+  @manyToMany(() => Workspace, {
+    pivotTable: 'workspaces_users',
+    pivotForeignKey: 'user_id',
+    pivotRelatedForeignKey: 'workspace_id',
+    pivotColumns: ['role'],
+    pivotTimestamps: true,
+  })
+  declare workspaces: ManyToMany<typeof Workspace>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

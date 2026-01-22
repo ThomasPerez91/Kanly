@@ -1,12 +1,5 @@
 import User from '#models/user'
-
-export type UserPublicDTO = {
-  id: number
-  email: string
-  fullName: string | null
-  avatarUrl: string | null
-  timezone: string | null
-}
+import type { UserPublicDTO } from '#dtos/auth/user_public_dto_type'
 
 export function userToPublicDto(user: User): UserPublicDTO {
   return {

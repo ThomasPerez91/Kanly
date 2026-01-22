@@ -1,0 +1,12 @@
+import Workspace from '#models/workspace'
+import { WorkspaceUserRoles } from '#enum/workspace_user_roles'
+import type { WorkspacePublicDTO } from '#dtos/workspace/workspace_public_dto_type'
+
+export function workspaceToPublicDto(workspace: Workspace): WorkspacePublicDTO {
+  return {
+    id: workspace.id,
+    name: workspace.name,
+    slug: workspace.slug,
+    role: workspace.$extras.role as WorkspaceUserRoles,
+  }
+}

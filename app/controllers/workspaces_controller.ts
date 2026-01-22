@@ -11,6 +11,7 @@ export default class WorkspacesController {
         'workspaces.id',
         'workspaces.name',
         'workspaces.slug',
+        'workspaces.avatar_url',
         'workspace_users.role as role',
       ])
       .whereHas('users', (q) => {

@@ -16,6 +16,9 @@ export default class Workspace extends BaseModel {
   @column()
   declare ownerId: number
 
+  @column()
+  declare avatarUrl: string | null
+
   @belongsTo(() => User, {foreignKey: 'ownerId'})
   declare owner: BelongsTo<typeof User>
 

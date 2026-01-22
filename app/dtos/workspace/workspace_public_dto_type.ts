@@ -4,5 +4,6 @@ export type WorkspacePublicDTO = {
   id: number
   name: string
   slug: string
+  avatarUrl: string | null
   role: WorkspaceUserRoles
 }

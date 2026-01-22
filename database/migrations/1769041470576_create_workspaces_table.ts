@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.string('name', 150).notNullable()
       table.string('slug', 180).notNullable().unique()
       table.integer('owner_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE')
+      table.string('avatar_url', 2048).nullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

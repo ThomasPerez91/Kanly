@@ -1,4 +1,4 @@
-import { WorkspaceUserRoles } from '#enum/workspace_user_roles'
+import { WorkspaceUserRoles } from '#enums/workspace_user_roles'
 
 export type WorkspacePublicDTO = {
   id: number

@@ -27,7 +27,7 @@ export const Drawer: FC<DrawerProps> = ({ open, onClose, title, children }) => {
         aria-label="Close"
       />
 
-      <div className="absolute left-0 top-0 h-full w-[80vw] max-w-[320px] bg-bg border-r border-border shadow-soft">
+      <div className="absolute left-0 top-0 h-full w-[84vw] max-w-[340px] bg-bg border-r border-border shadow-soft animate-[slideIn_.15s_ease-out]">
         <div className="h-14 px-3 border-b border-border flex items-center justify-between">
           <div className="text-sm font-900 text-text truncate">{title ?? 'Menu'}</div>
           <button

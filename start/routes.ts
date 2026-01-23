@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 import { AuthProviders } from '#enums/auth_providers'
 const AuthController = () => import('#controllers/auth_controller')
 const WorkspacesController = () => import('#controllers/workspaces_controller')
@@ -20,6 +21,4 @@ router
   })
   .prefix('/auth')
 
-  router
-  .get('/dashboard', [WorkspacesController, 'index'])
-  .middleware(['auth'])
+router.get('/dashboard', [WorkspacesController, 'index']).middleware([middleware.auth()])

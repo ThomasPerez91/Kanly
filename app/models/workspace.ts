@@ -19,7 +19,7 @@ export default class Workspace extends BaseModel {
   @column()
   declare avatarUrl: string | null
 
-  @belongsTo(() => User, {foreignKey: 'ownerId'})
+  @belongsTo(() => User, { foreignKey: 'ownerId' })
   declare owner: BelongsTo<typeof User>
 
   @manyToMany(() => User, {

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Workspace from '#models/workspace'
-import { workspaceToPublicDto, type WorkspacePublicDTO } from '#dtos/workspace/workspace_public_dto'
+import { workspaceToPublicDto } from '#dtos/workspace/workspace_public_dto'
+import type { WorkspacePublicDTO } from '#dtos/workspace/workspace_public_dto_type'
 
 export default class WorkspacesController {
   async index({ auth, inertia }: HttpContext) {
@@ -12,15 +13,15 @@ export default class WorkspacesController {
         'workspaces.name',
         'workspaces.slug',
         'workspaces.avatar_url',
-        'workspace_users.role as role',
+        'workspaces_users.role as role',
       ])
       .whereHas('users', (q) => {
         q.where('users.id', user.id)
       })
-      .join('workspace_users', (join) => {
+      .join('workspaces_users', (join) => {
         join
-          .on('workspace_users.workspace_id', '=', 'workspaces.id')
-          .andOnVal('workspace_users.user_id', '=', user.id)
+          .on('workspaces_users.workspace_id', '=', 'workspaces.id')
+          .andOnVal('workspaces_users.user_id', '=', user.id)
       })
       .orderBy('workspaces.name', 'asc')
 

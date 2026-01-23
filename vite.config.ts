@@ -12,6 +12,16 @@ export default defineConfig({
     UnoCss(),
     adonisjs({ entrypoints: ['inertia/app/app.tsx'], reload: ['resources/views/**/*.edge'] }),
   ],
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      clientPort: 5173,
+    },
+  },
 
   /**
    * Define aliases for importing modules from

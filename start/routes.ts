@@ -21,4 +21,12 @@ router
   })
   .prefix('/auth')
 
-router.get('/dashboard', [WorkspacesController, 'index']).middleware([middleware.auth()])
+router
+  .group(() => {
+    router.get('/dashboard', [WorkspacesController, 'index'])
+    router.post('/workspaces', [WorkspacesController, 'store'])
+    router.put('/workspaces/:id', [WorkspacesController, 'update'])
+    router.patch('/workspaces/:id', [WorkspacesController, 'update'])
+    router.delete('/workspaces/:id', [WorkspacesController, 'destroy'])
+  })
+  .middleware([middleware.auth()])

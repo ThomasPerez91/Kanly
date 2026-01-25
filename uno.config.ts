@@ -93,27 +93,48 @@ export default defineConfig({
 
     // dropdown (reusable)
     ['dropdown-panel', 'bg-surface border border-border rounded-xl shadow-soft overflow-hidden'],
-    ['dropdown-item', 'w-full flex items-center gap-2 px-3 py-2 text-sm font-700 text-text hover:bg-bg transition'],
+    [
+      'dropdown-item',
+      'w-full flex items-center justify-start text-left gap-2 px-3 py-2 text-sm font-700 text-text hover:bg-bg transition',
+    ],
+
     ['dropdown-item-muted', 'text-text-muted hover:text-text'],
     ['dropdown-sep', 'h-px w-full bg-border'],
     ['dropdown-header', 'px-3 py-2 text-xs font-900 text-text-muted uppercase tracking-wide'],
-    ['dropdown-item-danger', 'w-full flex items-center gap-2 px-3 py-2 text-sm font-800 text-danger-600 hover:bg-danger-500/10 transition'],
+    [
+      'dropdown-item-danger',
+      'w-full flex items-center justify-start text-left gap-2 px-3 py-2 text-sm font-800 text-danger-600 hover:bg-danger-500/10 transition',
+    ],
+
     ['dropdown-anim', 'origin-top-right transition duration-150 ease-out'],
     ['dropdown-enter', 'opacity-100 scale-100'],
     ['dropdown-leave', 'opacity-0 scale-95 pointer-events-none'],
 
     // user menu (github-like)
-    ['avatar-btn', 'h-10 w-10 rounded-xl border border-border bg-surface flex items-center justify-center overflow-hidden hover:bg-bg transition'],
+    [
+      'avatar-btn',
+      'h-10 w-10 rounded-xl border border-border bg-surface flex items-center justify-center overflow-hidden hover:bg-bg transition',
+    ],
     ['avatar-img', 'h-full w-full object-cover'],
     ['avatar-fallback', 'text-sm font-900'],
 
     // skeleton
     ['skeleton', 'animate-pulse bg-border/70 rounded-xl'],
-      
+
     // aside workspaces
-    ['aside-workspaces', 'fixed left-0 top-0 h-screen w-16 border-r border-border bg-bg/70 backdrop-blur z-40 hidden sm:flex flex-col items-center py-3'],
-    ['workspace-icon-btn', 'h-11 w-11 rounded-xl bg-surface border border-border flex items-center justify-center hover:(bg-bg) transition'],
-    ['workspace-add-btn', 'h-11 w-11 rounded-xl bg-brand-600 text-white flex items-center justify-center hover:bg-brand-700 transition'],
+    [
+      'aside-workspaces',
+      'fixed left-0 top-14 h-[calc(100vh-56px)] w-16 border-r border-border bg-bg/70 backdrop-blur z-40 hidden sm:flex flex-col items-center py-3',
+    ],
+
+    [
+      'workspace-icon-btn',
+      'h-11 w-11 rounded-xl bg-surface border border-border flex items-center justify-center hover:(bg-bg) transition',
+    ],
+    [
+      'workspace-add-btn',
+      'h-11 w-11 rounded-xl bg-brand-600 text-white flex items-center justify-center hover:bg-brand-700 transition',
+    ],
 
     // divider
     ['divider', 'h-px w-full bg-border'],

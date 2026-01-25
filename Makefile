@@ -19,7 +19,7 @@ help: ## Affiche l'aide
 # -----------------------
 
 up: ## Démarre les services (dev)
-	$(COMPOSE) up
+	$(COMPOSE) up -d
 
 up-build: ## Démarre les services (dev) en rebuildant les images
 	$(COMPOSE) up -d --build

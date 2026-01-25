@@ -4,7 +4,7 @@ import { FaTasks } from 'react-icons/fa'
 import { FiMenu, FiSearch } from 'react-icons/fi'
 
 import type { AppNavbarProps } from './app_navbar_type'
-import { UserMenu } from '~/components/user_menu/user_menu'
+import { UserMenu } from '~/components/user/user_menu/user_menu'
 
 export const AppNavbar: FC<AppNavbarProps> = ({
   isAuthenticated,
@@ -17,7 +17,6 @@ export const AppNavbar: FC<AppNavbarProps> = ({
   return (
     <header className="navbar-app">
       <div className="navbar-app-inner">
-        {/* Mobile: open workspace drawer */}
         <button
           type="button"
           onClick={onOpenWorkspaceDrawer}
@@ -27,33 +26,24 @@ export const AppNavbar: FC<AppNavbarProps> = ({
           <FiMenu className="text-xl" />
         </button>
 
-        {/* Brand */}
         <Link href="/dashboard" className="navbar-brand" aria-label="Go to dashboard">
           <FaTasks className="text-brand-600 text-lg" />
           <span className="hidden sm:inline">Kanly</span>
         </Link>
 
-        {/* Search */}
         <div className="navbar-search-wrap">
           <div className="w-full max-w-xl">
             <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-              <input
-                className="search-input pl-9"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
+              <input className="search-input pl-9" type="search" placeholder="Search" />
             </div>
           </div>
         </div>
 
-        {/* Right */}
         <div className="navbar-actions">
           {rightSlot}
-
-          {isAuthenticated && user ? (
-            <UserMenu user={user} onLogout={onLogout} isLoggingOut={Boolean(isLoggingOut)} />
+          {isAuthenticated ? (
+            <UserMenu user={user} onLogout={onLogout} isLoggingOut={isLoggingOut} />
           ) : null}
         </div>
       </div>

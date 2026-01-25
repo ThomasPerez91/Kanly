@@ -1,10 +1,10 @@
 import type { FC } from 'react'
-
 import type { WorkspaceSwitcherItemProps } from './workspace_switcher_item_type'
+import { Avatar } from '~/components/ui/avatar/avatar'
 
 export const WorkspaceSwitcherItem: FC<WorkspaceSwitcherItemProps> = ({
   name,
-  imageUrl,
+  avatarUrl,
   isActive,
   onClick,
 }) => {
@@ -13,13 +13,9 @@ export const WorkspaceSwitcherItem: FC<WorkspaceSwitcherItemProps> = ({
       type="button"
       onClick={onClick}
       className={`workspace-icon-btn ${isActive ? 'ring-4 ring-brand-500/20' : ''}`}
-      aria-label={`Open workspace ${name}`}
+      aria-label={name}
     >
-      {imageUrl ? (
-        <img src={imageUrl} className="h-full w-full object-cover" />
-      ) : (
-        <span className="text-sm font-900">{name.slice(0, 1).toUpperCase()}</span>
-      )}
+      <Avatar name={name} src={avatarUrl} size="lg" />
     </button>
   )
 }

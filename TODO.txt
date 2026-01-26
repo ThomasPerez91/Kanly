@@ -1,0 +1,2 @@
+1- Améliorer le design de la modal
+3- Vérifier si on peut réduire la taille des urls d'image

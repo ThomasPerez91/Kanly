@@ -1,7 +1,7 @@
 import type { WorkspacePublic } from '~/lib/types/workspace_public'
 
-export type WorkspaceHeaderProps = {
+export type WorkspaceEditModalProps = {
+  open: boolean
+  onClose: () => void
   workspace: WorkspacePublic
-  onEdit: () => void
-  onDelete: () => void
 }

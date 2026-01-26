@@ -7,13 +7,22 @@ import { Dropdown } from '~/components/ui/dropdown/dropdown'
 import { DropdownItem } from '~/components/ui/dropdown/dropdown_item'
 import { DropdownSeparator } from '~/components/ui/dropdown/dropdown_separator'
 
-export const WorkspaceHeader: FC<WorkspaceHeaderProps> = ({ workspace }) => {
+export const WorkspaceHeader: FC<WorkspaceHeaderProps> = ({ workspace, onEdit, onDelete }) => {
   const { isAuthenticated } = useAuthUser()
-
   const canManage = isAuthenticated && workspace.role === 'owner'
 
   const trigger = (
-    <FiSettings className="h-5 w-5 text-xl text-text-muted" aria-label="Workspace settings" />
+    <span
+      className={[
+        // hit area (comfortable click) but visually minimal
+        'h-9 w-9 rounded-lg inline-flex items-center justify-center',
+        'text-text-muted hover:text-text hover:bg-black/5 transition',
+        'focus:outline-none focus:(ring-4 ring-brand-500/20)',
+      ].join(' ')}
+      aria-label="Workspace settings"
+    >
+      <FiSettings className="h-5 w-5" />
+    </span>
   )
 
   return (
@@ -30,13 +39,13 @@ export const WorkspaceHeader: FC<WorkspaceHeaderProps> = ({ workspace }) => {
           widthClassName="w-56"
           panelClassName="p-1"
         >
-          <DropdownItem type="button" label="Edit workspace" onClick={() => {}} />
+          <DropdownItem type="button" label="Edit workspace" onClick={onEdit} />
           <DropdownSeparator />
           <DropdownItem
             type="button"
             label="Delete workspace"
             className="dropdown-item-danger"
-            onClick={() => {}}
+            onClick={onDelete}
           />
         </Dropdown>
       ) : null}

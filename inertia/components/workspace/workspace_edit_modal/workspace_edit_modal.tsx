@@ -1,14 +1,14 @@
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
-import type { WorkspaceCreateModalProps } from './workspace_create_modal_type'
+import type { WorkspaceEditModalProps } from './workspace_edit_modal_type'
 import { Modal } from '~/components/ui/modal/modal'
 import { WorkspaceNameInput } from '~/components/workspace/workspace_form/workspace_name_input'
 import { Button } from '~/components/ui/button/button'
 import { Avatar } from '~/components/ui/avatar/avatar'
 
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
-import { createWorkspaceAction } from '~/actions/workspace/create'
+import { updateWorkspaceAction } from '~/actions/workspace/update'
 
 function getFirstLetter(name: string) {
   const trimmed = name.trim()
@@ -21,13 +21,12 @@ type FieldErrors = {
   avatarUrl?: string[]
 }
 
-export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onClose }) => {
+export const WorkspaceEditModal: FC<WorkspaceEditModalProps> = ({ open, onClose, workspace }) => {
   const { csrfToken } = useAuthUser()
+  const action = useMemo(() => updateWorkspaceAction(csrfToken), [csrfToken])
 
-  const action = useMemo(() => createWorkspaceAction(csrfToken), [csrfToken])
-
-  const [name, setName] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState('')
+  const [name, setName] = useState(workspace.name ?? '')
+  const [avatarUrl, setAvatarUrl] = useState(workspace.avatarUrl ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -38,13 +37,12 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
 
   useEffect(() => {
     if (!open) return
-
-    setName('')
-    setAvatarUrl('')
+    setName(workspace.name ?? '')
+    setAvatarUrl(workspace.avatarUrl ?? '')
     setIsSubmitting(false)
     setFieldErrors({})
     setError(null)
-  }, [open])
+  }, [open, workspace.id])
 
   const onSubmit = async () => {
     if (isSubmitting) return
@@ -54,6 +52,7 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
     setError(null)
 
     const res = await action({
+      id: workspace.id,
       name: name.trim(),
       avatarUrl: avatarUrl.trim() || null,
     })
@@ -70,7 +69,6 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
       return
     }
 
-    // success
     onClose()
   }
 
@@ -78,18 +76,15 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
     <Modal
       open={open}
       onClose={onClose}
-      title="Create workspace"
-      description="Choose a name and an optional avatar."
+      title="Edit workspace"
+      description="Update name and avatar."
       widthClassName="max-w-xl"
     >
       {/* Preview */}
       <div className="border border-border rounded-xl bg-bg/40 p-3">
-        <div className="text-xs font-900 text-text-muted uppercase tracking-wide mb-2">
-          Preview
-        </div>
+        <div className="text-xs font-900 text-text-muted uppercase tracking-wide mb-2">Preview</div>
 
         <div className="flex items-center gap-3">
-          {/* Left preview = aside button */}
           <div className="h-11 w-11 rounded-xl border border-border bg-surface overflow-hidden flex items-center justify-center">
             {hasAvatar ? (
               <Avatar name={name || '—'} src={avatarUrl} size="lg" />
@@ -98,7 +93,6 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
             )}
           </div>
 
-          {/* Right preview = drawer row */}
           <div className="flex-1 min-w-0">
             <div className="text-sm font-900 text-text truncate">
               {name.trim() || 'Workspace name'}
@@ -116,18 +110,17 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
           value={name}
           onChange={(v) => {
             setName(v)
-            // clear field error as user types
             if (fieldErrors.name?.length) setFieldErrors((p) => ({ ...p, name: undefined }))
           }}
           error={fieldErrors.name?.[0]}
         />
 
         <div>
-          <label className="label" htmlFor="workspace-avatar">
+          <label className="label" htmlFor="workspace-avatar-edit">
             Avatar URL (optional)
           </label>
           <input
-            id="workspace-avatar"
+            id="workspace-avatar-edit"
             className="input"
             value={avatarUrl}
             onChange={(e) => {
@@ -148,11 +141,18 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
         ) : null}
 
         <div className="flex items-center justify-end gap-2">
-          <Button variant="ghost" size="sm" label="Cancel" type="button" onClick={onClose} disabled={isSubmitting} />
+          <Button
+            variant="ghost"
+            size="sm"
+            label="Cancel"
+            type="button"
+            onClick={onClose}
+            disabled={isSubmitting}
+          />
           <Button
             variant="primary"
             size="sm"
-            label="Create"
+            label="Save"
             type="button"
             loading={isSubmitting}
             disabled={!name.trim()}

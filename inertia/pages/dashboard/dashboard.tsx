@@ -1,10 +1,16 @@
 import type { FC } from 'react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import type { WorkspacePublic } from '~/lib/types/workspace_public'
 import { AppLayout } from '~/layouts/app_layout/app_layout'
 import { Skeleton } from '~/components/ui/skeleton/skeleton'
 import { WorkspaceHeader } from '~/components/workspace/workspace_header/workspace_header'
+
+import { WorkspaceEditModal } from '~/components/workspace/workspace_edit_modal/workspace_edit_modal'
+import { ConfirmDeleteModal } from '~/components/ui/confirm_delete_modal/confirm_delete_modal'
+
+import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
+import { deleteWorkspaceAction } from '~/actions/workspace/delete'
 
 type DashboardPageProps = {
   workspaces: WorkspacePublic[]
@@ -20,10 +26,72 @@ const DashboardPage: DashboardPageComponent = ({ workspaces, activeWorkspaceId }
     return workspaces.find((w) => w.id === activeWorkspaceId) ?? null
   }, [workspaces, activeWorkspaceId])
 
+  const { csrfToken } = useAuthUser()
+  const deleteAction = useMemo(() => deleteWorkspaceAction(csrfToken), [csrfToken])
+
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  const onConfirmDelete = async () => {
+    if (!activeWorkspace) return
+    if (isDeleting) return
+
+    setIsDeleting(true)
+    setDeleteError(null)
+
+    const res = await deleteAction({ id: activeWorkspace.id })
+
+    setIsDeleting(false)
+
+    if (res.fieldErrors) {
+      // normalement pas de fieldErrors ici, mais on garde safe
+      setDeleteError('Invalid request')
+      return
+    }
+
+    if (res.error) {
+      setDeleteError(res.error)
+      return
+    }
+
+    setIsDeleteOpen(false)
+  }
+
   return (
     <div className="space-y-6">
       {activeWorkspace ? (
-        <WorkspaceHeader workspace={activeWorkspace} />
+        <>
+          <WorkspaceHeader
+            workspace={activeWorkspace}
+            onEdit={() => setIsEditOpen(true)}
+            onDelete={() => setIsDeleteOpen(true)}
+          />
+
+          {/* Modals */}
+          <WorkspaceEditModal
+            open={isEditOpen}
+            onClose={() => setIsEditOpen(false)}
+            workspace={activeWorkspace}
+          />
+
+          <ConfirmDeleteModal
+            open={isDeleteOpen}
+            onClose={() => {
+              setIsDeleteOpen(false)
+              setDeleteError(null)
+              setIsDeleting(false)
+            }}
+            title="Delete workspace"
+            description={`Delete "${activeWorkspace.name}"? This action cannot be undone.`}
+            confirmLabel="Delete"
+            isConfirming={isDeleting}
+            error={deleteError}
+            onConfirm={onConfirmDelete}
+          />
+        </>
       ) : (
         <div className="space-y-1">
           <h1 className="h2">Dashboard</h1>

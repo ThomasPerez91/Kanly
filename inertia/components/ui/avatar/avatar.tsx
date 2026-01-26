@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useMemo, useState } from 'react'
-import type { AvatarProps } from './avatar_type'
+import type { AvatarProps } from '~/components/ui/avatar/avatar_type'
 
 const sizeMap = {
   sm: 'h-9 w-9',

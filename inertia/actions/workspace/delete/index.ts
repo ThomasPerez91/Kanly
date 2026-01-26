@@ -6,10 +6,9 @@ import type { InputType, ReturnType } from './type'
 
 export const deleteWorkspaceAction = (csrfToken: string) =>
   createSafeAction<InputType, ReturnType>(WorkspaceDeleteSchema, async (data) => {
-    const res = await http.delete<ReturnType>(`/workspaces/${data.id}`, { csrfToken })
+    const res = await http.delete<void>(`/workspaces/${data.id}`, { csrfToken })
 
     if (!res.ok) return { error: res.error }
-
     router.visit('/dashboard', { preserveScroll: true })
-    return { data: res.data }
+    return { data: undefined }
   })

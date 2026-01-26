@@ -28,15 +28,13 @@ export default class WorkspacesController {
         'workspaces.name',
         'workspaces.slug',
         'workspaces.avatar_url',
-        'workspace_users.role as role',
+        'workspaces_users.role as role',
       ])
-      .whereHas('users', (q) => {
-        q.where('users.id', user.id)
-      })
-      .join('workspace_users', (join) => {
+      .whereHas('users', (q) => q.where('users.id', user.id))
+      .join('workspaces_users', (join) => {
         join
-          .on('workspace_users.workspace_id', '=', 'workspaces.id')
-          .andOnVal('workspace_users.user_id', '=', user.id)
+          .on('workspaces_users.workspace_id', '=', 'workspaces.id')
+          .andOnVal('workspaces_users.user_id', '=', user.id)
       })
       .orderBy('workspaces.name', 'asc')
 
@@ -90,10 +88,10 @@ export default class WorkspacesController {
     const workspaceId = Number(params.id)
 
     const membership = await Workspace.query()
-      .select(['workspaces.id', 'workspaces.owner_id', 'workspace_users.role as role'])
-      .join('workspace_users', 'workspace_users.workspace_id', 'workspaces.id')
+      .select(['workspaces.id', 'workspaces.owner_id', 'workspaces_users.role as role'])
+      .join('workspaces_users', 'workspaces_users.workspace_id', 'workspaces.id')
       .where('workspaces.id', workspaceId)
-      .where('workspace_users.user_id', user.id)
+      .where('workspaces_users.user_id', user.id)
       .first()
 
     if (!membership) {

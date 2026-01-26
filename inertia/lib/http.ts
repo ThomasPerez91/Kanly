@@ -47,6 +47,14 @@ const parseError = (status: number, payload?: any): string => {
   return 'Request failed'
 }
 
+const safeJsonParse = (raw: string) => {
+  try {
+    return { ok: true as const, value: JSON.parse(raw) }
+  } catch {
+    return { ok: false as const, value: raw }
+  }
+}
+
 export const http = {
   async request<TResponse, TBody = unknown>(
     url: string,
@@ -56,10 +64,11 @@ export const http = {
 
     const headers: Record<string, string> = {
       Accept: 'application/json',
+      // Helps many backends return JSON errors instead of HTML
+      'X-Requested-With': 'XMLHttpRequest',
       ...options.headers,
     }
 
-    // CSRF from Inertia props (best for SSR)
     if (options.csrfToken) {
       headers['X-CSRF-TOKEN'] = options.csrfToken
     }
@@ -77,10 +86,43 @@ export const http = {
         body,
         credentials: options.credentials ?? 'same-origin',
         signal: options.signal,
+        redirect: 'follow',
       })
 
+      // 204 No Content
+      if (response.status === 204) {
+        if (!response.ok) {
+          return { ok: false, status: response.status, error: parseError(response.status) }
+        }
+        return { ok: true, status: response.status, data: undefined as unknown as TResponse }
+      }
+
+      const contentType = response.headers.get('content-type') ?? ''
       const raw = await response.text()
-      const payload = raw ? JSON.parse(raw) : undefined
+
+      // Empty body (can happen on redirects / some responses)
+      if (!raw) {
+        if (!response.ok) {
+          return {
+            ok: false,
+            status: response.status,
+            error: parseError(response.status),
+          }
+        }
+        return { ok: true, status: response.status, data: undefined as unknown as TResponse }
+      }
+
+      // Parse JSON only when it makes sense (or try-parse safely)
+      let payload: any = undefined
+
+      if (contentType.includes('application/json')) {
+        const parsed = safeJsonParse(raw)
+        payload = parsed.ok ? parsed.value : undefined
+      } else {
+        // Non-json (HTML redirect pages, etc.)
+        const parsed = safeJsonParse(raw)
+        payload = parsed.ok ? parsed.value : raw
+      }
 
       if (!response.ok) {
         return {
@@ -123,6 +165,10 @@ export const http = {
   },
 
   del<T>(url: string, options: Omit<RequestOptions<never>, 'method' | 'body'> = {}) {
+    return http.request<T>(url, { ...options, method: 'DELETE' })
+  },
+
+  delete<T>(url: string, options: Omit<RequestOptions<never>, 'method' | 'body'> = {}) {
     return http.request<T>(url, { ...options, method: 'DELETE' })
   },
 }

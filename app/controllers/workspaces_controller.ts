@@ -19,7 +19,7 @@ function slugify(input: string) {
 }
 
 export default class WorkspacesController {
-  async index({ auth, inertia }: HttpContext) {
+  async index({ auth, inertia, request }: HttpContext) {
     const user = auth.user!
 
     const workspaces = await Workspace.query()
@@ -42,8 +42,16 @@ export default class WorkspacesController {
 
     const data: WorkspacePublicDTO[] = workspaces.map(workspaceToPublicDto)
 
+    // Active workspace id from query string (?workspace=1)
+    const activeWorkspaceIdRaw = request.input('workspace')
+    const activeWorkspaceId =
+      activeWorkspaceIdRaw !== undefined && activeWorkspaceIdRaw !== null
+        ? Number(activeWorkspaceIdRaw)
+        : null
+
     return inertia.render('dashboard/dashboard', {
       workspaces: data,
+      activeWorkspaceId: Number.isFinite(activeWorkspaceId) ? activeWorkspaceId : null,
     })
   }
 
@@ -68,7 +76,13 @@ export default class WorkspacesController {
       [user.id]: { role: WorkspaceUserRoles.owner },
     })
 
-    return response.redirect().toPath('/dashboard')
+    // We return a DTO with role='owner' (we know it)
+    const dto = workspaceToPublicDto({
+      ...workspace,
+      $extras: { role: WorkspaceUserRoles.owner },
+    } as any) as WorkspacePublicDTO
+
+    return response.created({ workspace: dto })
   }
 
   async update({ auth, params, request, response }: HttpContext) {
@@ -104,7 +118,13 @@ export default class WorkspacesController {
 
     await workspace.save()
 
-    return response.redirect().toPath('/dashboard')
+    // Return updated DTO with the caller's role (same as membership role)
+    const dto = workspaceToPublicDto({
+      ...workspace,
+      $extras: { role },
+    } as any) as WorkspacePublicDTO
+
+    return response.ok({ workspace: dto })
   }
 
   async destroy({ auth, params, response }: HttpContext) {
@@ -121,6 +141,8 @@ export default class WorkspacesController {
     }
 
     await workspace.delete()
-    return response.redirect().toPath('/dashboard')
+
+    // No redirect: just a clean status
+    return response.noContent()
   }
 }

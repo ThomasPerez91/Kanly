@@ -1,4 +1,2 @@
-1- Centrer la modal sur l'écran, améliorer son design
+1- Améliorer le design de la modal
 3- Vérifier si on peut réduire la taille des urls d'image
-4- Deplacer l'aside sous la navbar.
-5- Ajouter le reste des actions crud sur les workspaces

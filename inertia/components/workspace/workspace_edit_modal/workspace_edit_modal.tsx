@@ -78,86 +78,100 @@ export const WorkspaceEditModal: FC<WorkspaceEditModalProps> = ({ open, onClose,
       onClose={onClose}
       title="Edit workspace"
       description="Update name and avatar."
-      widthClassName="max-w-xl"
+      widthClassName="max-w-4xl"
     >
-      {/* Preview */}
-      <div className="border border-border rounded-xl bg-bg/40 p-3">
-        <div className="text-xs font-900 text-text-muted uppercase tracking-wide mb-2">Preview</div>
-
-        <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl border border-border bg-surface overflow-hidden flex items-center justify-center">
-            {hasAvatar ? (
-              <Avatar name={name || '—'} src={avatarUrl} size="lg" />
-            ) : (
-              <span className="text-sm font-900">{letter || '—'}</span>
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-900 text-text truncate">
-              {name.trim() || 'Workspace name'}
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
+        {/* Preview (mobile first) */}
+        <div className="sm:order-2 sm:pl-4 sm:border-l sm:border-border">
+          <div className="sm:sticky sm:top-20">
+            <div className="text-xs font-900 text-text-muted uppercase tracking-wide mb-2">
+              Preview
             </div>
-            <div className="text-xs text-text-muted truncate">
-              {hasAvatar ? 'Avatar enabled' : 'Letter icon'}
+
+            <div className="border border-border rounded-xl bg-bg/40 p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl border border-border bg-surface overflow-hidden flex items-center justify-center">
+                  {hasAvatar ? (
+                    <Avatar name={name || '—'} src={avatarUrl} size="lg" />
+                  ) : (
+                    <span className="text-base font-900">{letter || '—'}</span>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-900 text-text truncate">
+                    {name.trim() || 'Workspace name'}
+                  </div>
+                  <div className="text-xs text-text-muted truncate">
+                    {hasAvatar ? 'Avatar enabled' : 'Letter icon'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="divider my-4" />
+
+              <div className="text-xs text-text-muted">
+                This is how the workspace will appear in the sidebar and in mobile drawer lists.
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Form */}
-      <div className="mt-4 space-y-4">
-        <WorkspaceNameInput
-          value={name}
-          onChange={(v) => {
-            setName(v)
-            if (fieldErrors.name?.length) setFieldErrors((p) => ({ ...p, name: undefined }))
-          }}
-          error={fieldErrors.name?.[0]}
-        />
-
-        <div>
-          <label className="label" htmlFor="workspace-avatar-edit">
-            Avatar URL (optional)
-          </label>
-          <input
-            id="workspace-avatar-edit"
-            className="input"
-            value={avatarUrl}
-            onChange={(e) => {
-              setAvatarUrl(e.target.value)
-              if (fieldErrors.avatarUrl?.length)
-                setFieldErrors((p) => ({ ...p, avatarUrl: undefined }))
+        {/* Form */}
+        <div className="space-y-4 sm:order-1 sm:pr-4">
+          <WorkspaceNameInput
+            value={name}
+            onChange={(v) => {
+              setName(v)
+              if (fieldErrors.name?.length) setFieldErrors((p) => ({ ...p, name: undefined }))
             }}
-            placeholder="https://..."
-            autoComplete="off"
+            error={fieldErrors.name?.[0]}
           />
-          {fieldErrors.avatarUrl?.[0] ? <div className="error">{fieldErrors.avatarUrl[0]}</div> : null}
-        </div>
 
-        {error ? (
-          <div className="text-sm text-danger-600 border border-danger-500/20 bg-danger-500/10 rounded-xl p-3">
-            {error}
+          <div>
+            <label className="label" htmlFor="workspace-avatar-edit">
+              Avatar URL (optional)
+            </label>
+            <input
+              id="workspace-avatar-edit"
+              className="input"
+              value={avatarUrl}
+              onChange={(e) => {
+                setAvatarUrl(e.target.value)
+                if (fieldErrors.avatarUrl?.length)
+                  setFieldErrors((p) => ({ ...p, avatarUrl: undefined }))
+              }}
+              placeholder="https://..."
+              autoComplete="off"
+            />
+            {fieldErrors.avatarUrl?.[0] ? <div className="error">{fieldErrors.avatarUrl[0]}</div> : null}
           </div>
-        ) : null}
 
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            label="Cancel"
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-          />
-          <Button
-            variant="primary"
-            size="sm"
-            label="Save"
-            type="button"
-            loading={isSubmitting}
-            disabled={!name.trim()}
-            onClick={onSubmit}
-          />
+          {error ? (
+            <div className="text-sm text-danger-600 border border-danger-500/20 bg-danger-500/10 rounded-xl p-3">
+              {error}
+            </div>
+          ) : null}
+
+          <div className="flex items-center justify-end gap-2 pt-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              label="Cancel"
+              type="button"
+              onClick={onClose}
+              disabled={isSubmitting}
+            />
+            <Button
+              variant="primary"
+              size="sm"
+              label="Save"
+              type="button"
+              loading={isSubmitting}
+              disabled={!name.trim()}
+              onClick={onSubmit}
+            />
+          </div>
         </div>
       </div>
     </Modal>

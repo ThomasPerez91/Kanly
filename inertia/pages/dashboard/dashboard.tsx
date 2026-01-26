@@ -7,7 +7,7 @@ import { Skeleton } from '~/components/ui/skeleton/skeleton'
 import { WorkspaceHeader } from '~/components/workspace/workspace_header/workspace_header'
 
 import { WorkspaceEditModal } from '~/components/workspace/workspace_edit_modal/workspace_edit_modal'
-import { ConfirmDeleteModal } from '~/components/ui/confirm_delete_modal/confirm_delete_modal'
+import { ConfirmDeleteModal } from '~/components/ui/modal/confirm_delete_modal'
 
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
 import { deleteWorkspaceAction } from '~/actions/workspace/delete'

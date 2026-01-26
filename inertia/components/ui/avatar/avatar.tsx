@@ -30,9 +30,12 @@ export const Avatar: FC<AvatarProps> = ({
     sizeMap[size],
     radius,
     'overflow-hidden flex items-center justify-center',
-    bordered ? 'border border-border bg-surface' : 'bg-surface',
+    bordered ? 'border border-border' : '',
+    'bg-surface',
     className ?? '',
-  ].join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   const showImg = Boolean(src && !hasError)
 
@@ -42,11 +45,10 @@ export const Avatar: FC<AvatarProps> = ({
         <img
           src={src ?? ''}
           alt={alt ?? name ?? 'Avatar'}
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-center bg-bg"
           loading="lazy"
           decoding="async"
           onError={() => setHasError(true)}
-          style={{ boxShadow: 'inset 0 0 0 2px rgba(230,234,242,0.9)' }}
         />
       ) : (
         <span className="text-sm font-900 text-text">{letter}</span>

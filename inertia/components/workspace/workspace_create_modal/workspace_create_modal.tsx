@@ -10,12 +10,6 @@ import { Avatar } from '~/components/ui/avatar/avatar'
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
 import { createWorkspaceAction } from '~/actions/workspace/create'
 
-function getFirstLetter(name: string) {
-  const trimmed = name.trim()
-  if (!trimmed) return ''
-  return trimmed[0]!.toUpperCase()
-}
-
 type FieldErrors = {
   name?: string[]
   avatarUrl?: string[]
@@ -32,7 +26,6 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [error, setError] = useState<string | null>(null)
 
-  const letter = useMemo(() => getFirstLetter(name), [name])
   const hasAvatar = useMemo(() => avatarUrl.trim().length > 0, [avatarUrl])
 
   useEffect(() => {
@@ -90,11 +83,12 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
             <div className="border border-border rounded-xl bg-bg/40 p-4">
               <div className="flex items-center gap-3">
                 <div className="h-12 w-12 rounded-xl border border-border bg-surface overflow-hidden flex items-center justify-center">
-                  {hasAvatar ? (
-                    <Avatar name={name || '—'} src={avatarUrl} size="lg" />
-                  ) : (
-                    <span className="text-base font-900">{letter || '—'}</span>
-                  )}
+                  <Avatar
+                    name={name || '—'}
+                    src={hasAvatar ? avatarUrl : null}
+                    size="lg"
+                    bordered={true}
+                  />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -143,7 +137,9 @@ export const WorkspaceCreateModal: FC<WorkspaceCreateModalProps> = ({ open, onCl
               placeholder="https://..."
               autoComplete="off"
             />
-            {fieldErrors.avatarUrl?.[0] ? <div className="error">{fieldErrors.avatarUrl[0]}</div> : null}
+            {fieldErrors.avatarUrl?.[0] ? (
+              <div className="error">{fieldErrors.avatarUrl[0]}</div>
+            ) : null}
           </div>
 
           {error ? (

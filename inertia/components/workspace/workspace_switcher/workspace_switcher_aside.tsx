@@ -3,6 +3,7 @@ import { FiPlus } from 'react-icons/fi'
 
 import type { WorkspaceSwitcherAsideProps } from './workspace_switcher_aside_type'
 import { WorkspaceSwitcherItem } from './workspace_switcher_item'
+import { Avatar } from '~/components/ui/avatar/avatar'
 
 export const WorkspaceSwitcherAside: FC<WorkspaceSwitcherAsideProps> = ({
   className,
@@ -25,13 +26,8 @@ export const WorkspaceSwitcherAside: FC<WorkspaceSwitcherAsideProps> = ({
                 ws.id === activeWorkspaceId ? 'ring-4 ring-brand-500/15' : ''
               }`}
             >
-              <div className="h-10 w-10 rounded-xl border border-border bg-bg overflow-hidden flex items-center justify-center font-900">
-                {ws.avatarUrl ? (
-                  <img src={ws.avatarUrl} className="h-full w-full object-cover" />
-                ) : (
-                  ws.name.slice(0, 1).toUpperCase()
-                )}
-              </div>
+              <Avatar name={ws.name} src={ws.avatarUrl} size="md" bordered={false} />
+
               <div className="flex-1 text-left min-w-0">
                 <div className="text-sm font-900 text-text truncate">{ws.name}</div>
                 <div className="text-xs text-text-muted truncate">Workspace</div>

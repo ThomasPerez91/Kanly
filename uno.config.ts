@@ -129,11 +129,30 @@ export default defineConfig({
 
     [
       'workspace-icon-btn',
-      'h-11 w-11 rounded-xl bg-surface border border-border flex items-center justify-center hover:(bg-bg) transition',
+      'h-11 w-11 rounded-xl bg-surface border border-transparent flex items-center justify-center hover:(bg-bg border-border) transition',
     ],
+
     [
       'workspace-add-btn',
       'h-11 w-11 rounded-xl bg-brand-600 text-white flex items-center justify-center hover:bg-brand-700 transition',
+    ],
+
+    // workspace hover tooltip
+    ['workspace-hover', 'relative flex items-center justify-center'],
+
+    [
+      'workspace-tooltip',
+      'pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 opacity-0 -translate-x-1 transition-all duration-150 ease-out group-hover:(opacity-100 translate-x-0) hidden sm:block z-50',
+    ],
+
+    [
+      'workspace-tooltip-text',
+      'px-3 py-1.5 rounded-lg bg-text text-white text-sm font-800 shadow-[0_10px_30px_rgba(0,0,0,0.25)] whitespace-nowrap relative',
+    ],
+
+    [
+      'workspace-tooltip-arrow',
+      'absolute left--1.2 top-1/2 -translate-y-1/2 w-2 h-2 bg-text rotate-45 rounded-[2px] shadow-[0_10px_30px_rgba(0,0,0,0.25)]',
     ],
 
     // divider

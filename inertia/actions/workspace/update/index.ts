@@ -26,6 +26,6 @@ export const updateWorkspaceAction = (csrfToken: string) =>
       return { error: res.error }
     }
 
-    router.reload({ preserveScroll: true })
+    router.reload()
     return { data: res.data }
   })

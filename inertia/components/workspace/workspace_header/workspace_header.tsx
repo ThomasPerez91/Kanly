@@ -14,7 +14,6 @@ export const WorkspaceHeader: FC<WorkspaceHeaderProps> = ({ workspace, onEdit, o
   const trigger = (
     <span
       className={[
-        // hit area (comfortable click) but visually minimal
         'h-9 w-9 rounded-lg inline-flex items-center justify-center',
         'text-text-muted hover:text-text hover:bg-black/5 transition',
         'focus:outline-none focus:(ring-4 ring-brand-500/20)',

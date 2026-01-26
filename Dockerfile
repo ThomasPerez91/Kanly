@@ -34,7 +34,7 @@ FROM base AS build
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN node ace build --production
+RUN node ace build
 
 ############################################
 # Prod runtime (HARDENED)

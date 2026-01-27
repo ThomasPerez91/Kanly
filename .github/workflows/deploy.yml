@@ -1,0 +1,25 @@
+name: Deploy Kanly (prod)
+
+on:
+  push:
+    branches: ['master']
+
+concurrency:
+  group: kanly-prod
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.KANLY_SSH_HOST }}
+          username: ${{ secrets.KANLY_SSH_USER }}
+          port: ${{ secrets.KANLY_SSH_PORT }}
+          key: ${{ secrets.KANLY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            /opt/kanly-infra/deploy.sh

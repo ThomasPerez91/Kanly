@@ -3,8 +3,8 @@ import { errors as authErrors } from '@adonisjs/auth'
 
 import User from '#models/user'
 
-import { registerValidator } from '#validators/auth_validator'
-import { loginValidator } from '#validators/auth_validator'
+import { registerValidator } from '#validators/auth'
+import { loginValidator } from '#validators/auth'
 
 import { isValidProvider } from '#services/auth/is_valid_provider'
 import { normalizeSocialUser } from '#services/auth/normalize_social_user'

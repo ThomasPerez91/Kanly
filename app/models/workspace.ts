@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany, belongsTo } from '@adonisjs/lucid/orm'
-import type { ManyToMany, BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, hasMany, manyToMany, belongsTo } from '@adonisjs/lucid/orm'
+import type { HasMany, ManyToMany, BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
+import Board from '#models/board'
 
 export default class Workspace extends BaseModel {
   @column({ isPrimary: true })
@@ -30,6 +31,9 @@ export default class Workspace extends BaseModel {
     pivotTimestamps: true,
   })
   declare users: ManyToMany<typeof User>
+
+  @hasMany(() => Board, { foreignKey: 'workspaceId' })
+  declare boards: HasMany<typeof Board>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

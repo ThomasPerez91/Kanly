@@ -1,9 +1,35 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+
+import User from '#models/user'
+import Workspace from '#models/workspace'
+import type { BoardTypes } from '#enums/board_types'
 
 export default class Board extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare workspaceId: number
+
+  @column()
+  declare ownerId: number
+
+  @column()
+  declare name: string
+
+  @column()
+  declare type: BoardTypes
+
+  @column()
+  declare backgroundUrl: string | null
+
+  @belongsTo(() => Workspace, { foreignKey: 'workspaceId' })
+  declare workspace: BelongsTo<typeof Workspace>
+
+  @belongsTo(() => User, { foreignKey: 'ownerId' })
+  declare owner: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

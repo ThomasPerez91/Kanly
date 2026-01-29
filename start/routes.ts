@@ -1,7 +1,9 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
 import { AuthProviders } from '#enums/auth_providers'
+import { middleware } from '#start/kernel'
+import router from '@adonisjs/core/services/router'
+
 const AuthController = () => import('#controllers/auth_controller')
+const BoardsController = () => import('#controllers/boards_controller')
 const WorkspacesController = () => import('#controllers/workspaces_controller')
 
 router.on('/').renderInertia('home')
@@ -28,5 +30,14 @@ router
     router.put('/workspaces/:id', [WorkspacesController, 'update'])
     router.patch('/workspaces/:id', [WorkspacesController, 'update'])
     router.delete('/workspaces/:id', [WorkspacesController, 'destroy'])
+
+    // Boards (child of workspaces)
+    router.get('/workspaces/:workspaceId/boards', [BoardsController, 'index'])
+    router.post('/workspaces/:workspaceId/boards', [BoardsController, 'store'])
+
+    router.get('/boards/:id', [BoardsController, 'show'])
+    router.put('/boards/:id', [BoardsController, 'update'])
+    router.patch('/boards/:id', [BoardsController, 'update'])
+    router.delete('/boards/:id', [BoardsController, 'destroy'])
   })
   .middleware([middleware.auth()])

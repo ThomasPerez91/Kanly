@@ -1,9 +1,11 @@
 // app/controllers/workspaces_controller.ts
 import type { HttpContext } from '@adonisjs/core/http'
+
 import Workspace from '#models/workspace'
 import { workspaceToPublicDto } from '#dtos/workspace/workspace_public_dto'
 import type { WorkspacePublicDTO } from '#dtos/workspace/workspace_public_dto_type'
 import { WorkspaceUserRoles } from '#enums/workspace_user_roles'
+import { createWorkspaceValidator, updateWorkspaceValidator } from '#validators/workspace'
 
 function slugify(input: string) {
   const base = input
@@ -40,7 +42,6 @@ export default class WorkspacesController {
 
     const data: WorkspacePublicDTO[] = workspaces.map(workspaceToPublicDto)
 
-    // Active workspace id from query string (?workspace=1)
     const activeWorkspaceIdRaw = request.input('workspace')
     const activeWorkspaceId =
       activeWorkspaceIdRaw !== undefined && activeWorkspaceIdRaw !== null
@@ -55,17 +56,17 @@ export default class WorkspacesController {
 
   async store({ auth, request, response }: HttpContext) {
     const user = auth.user!
-    const name = (request.input('name') ?? '').trim()
 
-    if (!name) {
-      return response.badRequest({ message: 'Name is required' })
-    }
+    const payload = await request.validateUsing(createWorkspaceValidator)
 
-    const avatarUrl = request.input('avatarUrl') ?? request.input('avatar_url') ?? null
+    const avatarUrl = (request.input('avatarUrl') ??
+      request.input('avatar_url') ??
+      payload.avatarUrl ??
+      null) as string | null
 
     const workspace = await Workspace.create({
-      name,
-      slug: slugify(name),
+      name: payload.name,
+      slug: slugify(payload.name),
       ownerId: user.id,
       avatarUrl,
     })
@@ -74,7 +75,6 @@ export default class WorkspacesController {
       [user.id]: { role: WorkspaceUserRoles.owner },
     })
 
-    // We return a DTO with role='owner' (we know it)
     const dto = workspaceToPublicDto({
       ...workspace,
       $extras: { role: WorkspaceUserRoles.owner },
@@ -94,29 +94,31 @@ export default class WorkspacesController {
       .where('workspaces_users.user_id', user.id)
       .first()
 
-    if (!membership) {
-      return response.unauthorized({ message: 'Not allowed' })
-    }
+    if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
     const role = (membership as any).$extras.role as WorkspaceUserRoles
     const isOwner = membership.ownerId === user.id || role === WorkspaceUserRoles.owner
     const isAdmin = role === WorkspaceUserRoles.admin
 
-    if (!isOwner && !isAdmin) {
-      return response.unauthorized({ message: 'Not allowed' })
-    }
+    if (!isOwner && !isAdmin) return response.unauthorized({ message: 'Not allowed' })
+
+    // payload vine
+    const payload = await request.validateUsing(updateWorkspaceValidator)
 
     const workspace = await Workspace.findOrFail(workspaceId)
 
-    const name = request.input('name')
-    const avatarUrl = request.input('avatarUrl') ?? request.input('avatar_url')
+    if (payload.name !== undefined) workspace.name = payload.name
 
-    if (typeof name === 'string' && name.trim()) workspace.name = name.trim()
-    if (avatarUrl !== undefined) workspace.avatarUrl = avatarUrl
+    // compat camel/snake + possibilité de null
+    const avatarUrl = request.input('avatarUrl') ?? request.input('avatar_url')
+    if (avatarUrl !== undefined) {
+      workspace.avatarUrl = avatarUrl
+    } else if (payload.avatarUrl !== undefined) {
+      workspace.avatarUrl = payload.avatarUrl
+    }
 
     await workspace.save()
 
-    // Return updated DTO with the caller's role (same as membership role)
     const dto = workspaceToPublicDto({
       ...workspace,
       $extras: { role },
@@ -139,8 +141,6 @@ export default class WorkspacesController {
     }
 
     await workspace.delete()
-
-    // No redirect: just a clean status
     return response.noContent()
   }
 }

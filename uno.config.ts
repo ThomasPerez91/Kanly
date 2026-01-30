@@ -137,6 +137,47 @@ export default defineConfig({
       'h-11 w-11 rounded-xl bg-brand-600 text-white flex items-center justify-center hover:bg-brand-700 transition',
     ],
 
+    // =========================================================
+    // aside workspace internal nav (2nd aside) — ANIMATED
+    // =========================================================
+
+    // desktop base (mounté en permanence, animé via open/closed)
+    [
+      'aside-workspace-nav',
+      'fixed left-16 top-14 h-[calc(100vh-56px)] w-16 border-r border-border bg-bg/80 backdrop-blur z-40 hidden sm:flex flex-col items-center py-3',
+    ],
+
+    // drawer/mobile base (panel “glass” arrondi + shadow)
+    [
+      'aside-workspace-nav-drawer',
+      'w-16 rounded-2xl border border-border bg-bg/85 backdrop-blur shadow-[0_18px_60px_rgba(15,23,42,0.18)] p-2',
+    ],
+
+    // animation states (shared) — slide depuis la gauche de l’aside #1
+    [
+      'aside-workspace-nav-open',
+      'translate-x-0 opacity-100 pointer-events-auto transition-[transform,opacity] duration-250 ease-[cubic-bezier(.2,.9,.2,1)]',
+    ],
+    [
+      'aside-workspace-nav-closed',
+      '-translate-x-full opacity-0 pointer-events-none transition-[transform,opacity] duration-200 ease-[cubic-bezier(.4,0,.8,.2)]',
+    ],
+
+    // nav buttons (petit feedback “snappy”)
+    [
+      'workspace-nav-btn',
+      'h-11 w-11 rounded-xl bg-surface border border-transparent text-text flex items-center justify-center hover:(bg-bg border-border) active:scale-95 transition',
+    ],
+    ['workspace-nav-btn-active', 'ring-4 ring-brand-500/20'],
+
+    // mobile overlay (tap to close) derrière le panel nav
+    [
+      'aside-workspace-nav-overlay',
+      'absolute inset-0 rounded-2xl bg-black/30 backdrop-blur-[1px] transition-opacity duration-200',
+    ],
+    ['aside-workspace-nav-overlay-open', 'opacity-100 pointer-events-auto'],
+    ['aside-workspace-nav-overlay-closed', 'opacity-0 pointer-events-none'],
+
     // workspace hover tooltip
     ['workspace-hover', 'relative flex items-center justify-center'],
 

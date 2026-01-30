@@ -8,11 +8,42 @@ import { Avatar } from '~/components/ui/avatar/avatar'
 export const WorkspaceSwitcherAside: FC<WorkspaceSwitcherAsideProps> = ({
   className,
   inDrawer,
+  compactInDrawer,
   workspaces,
   activeWorkspaceId,
   onCreateClick,
   onWorkspaceClick,
 }) => {
+  if (inDrawer && compactInDrawer) {
+    return (
+      <aside className={`w-14 p-2 ${className ?? ''}`} aria-label="Workspaces">
+        <div className="flex flex-col items-center gap-3">
+          {workspaces.map((ws) => (
+            <button
+              key={ws.id}
+              type="button"
+              onClick={() => onWorkspaceClick?.(ws.id)}
+              className={`workspace-icon-btn ${ws.id === activeWorkspaceId ? 'ring-4 ring-brand-500/20' : ''}`}
+              aria-label={ws.name}
+            >
+              <Avatar name={ws.name} src={ws.avatarUrl} size="lg" bordered={false} />
+            </button>
+          ))}
+
+          <button
+            type="button"
+            onClick={onCreateClick}
+            className="workspace-add-btn"
+            aria-label="Create workspace"
+          >
+            <FiPlus className="text-xl" />
+          </button>
+        </div>
+      </aside>
+    )
+  }
+
+  // Drawer normal (mobile): ton mode existant (liste large avec noms)
   if (inDrawer) {
     return (
       <aside className={`w-full p-3 ${className ?? ''}`} aria-label="Workspaces">
@@ -46,7 +77,7 @@ export const WorkspaceSwitcherAside: FC<WorkspaceSwitcherAsideProps> = ({
             </div>
             <div className="flex-1 text-left min-w-0">
               <div className="text-sm font-900 text-text truncate">Create workspace</div>
-              <div className="text-xs text-text-muted truncate">Add a new workspace</div>
+              <div className="text-xs text-text-muted truncate">New workspace</div>
             </div>
           </button>
         </div>
@@ -54,6 +85,7 @@ export const WorkspaceSwitcherAside: FC<WorkspaceSwitcherAsideProps> = ({
     )
   }
 
+  // Desktop (inchangé)
   return (
     <aside className={`aside-workspaces ${className ?? ''}`} aria-label="Workspaces">
       <div className="flex flex-col gap-3">

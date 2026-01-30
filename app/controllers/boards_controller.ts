@@ -1,10 +1,11 @@
-// app/controllers/boards_controller.ts
 import type { HttpContext } from '@adonisjs/core/http'
 
 import Board from '#models/board'
 import Workspace from '#models/workspace'
 import { WorkspaceUserRoles } from '#enums/workspace_user_roles'
-import { createBoardValidator, updateBoardValidator } from '#validators/board'
+import { createBoardValidator, updateBoardValidator } from '#validators/board_validator'
+import { boardToPublicDto } from '#dtos/board/board_public_dto'
+import type { BoardPublicDTO } from '#dtos/board/board_public_dto_type'
 
 async function getWorkspaceMembership(userId: number, workspaceId: number) {
   const membership = await Workspace.query()
@@ -24,6 +25,9 @@ async function getWorkspaceMembership(userId: number, workspaceId: number) {
 }
 
 export default class BoardsController {
+  /**
+   * GET /workspaces/:workspaceId/boards
+   */
   async index({ auth, params, response }: HttpContext) {
     const user = auth.user!
     const workspaceId = Number(params.workspaceId)
@@ -34,9 +38,14 @@ export default class BoardsController {
     const boards = await Board.query()
       .where('workspace_id', workspaceId)
       .orderBy('created_at', 'desc')
-    return response.ok({ boards })
+
+    const data: BoardPublicDTO[] = boards.map(boardToPublicDto)
+    return response.ok({ boards: data })
   }
 
+  /**
+   * POST /workspaces/:workspaceId/boards
+   */
   async store({ auth, params, request, response }: HttpContext) {
     const user = auth.user!
     const workspaceId = Number(params.workspaceId)
@@ -44,14 +53,14 @@ export default class BoardsController {
     const membership = await getWorkspaceMembership(user.id, workspaceId)
     if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
-    // payload vine
     const payload = await request.validateUsing(createBoardValidator)
 
     // compat camel/snake
-    const backgroundUrl = (request.input('backgroundUrl') ??
-      request.input('background_url') ??
-      payload.backgroundUrl ??
-      null) as string | null
+    const backgroundUrl =
+      (request.input('backgroundUrl') ??
+        request.input('background_url') ??
+        payload.backgroundUrl ??
+        null) as string | null
 
     const board = await Board.create({
       workspaceId,
@@ -61,9 +70,12 @@ export default class BoardsController {
       backgroundUrl,
     })
 
-    return response.created({ board })
+    return response.created({ board: boardToPublicDto(board) })
   }
 
+  /**
+   * GET /boards/:id
+   */
   async show({ auth, params, response }: HttpContext) {
     const user = auth.user!
     const boardId = Number(params.id)
@@ -74,9 +86,12 @@ export default class BoardsController {
     const membership = await getWorkspaceMembership(user.id, board.workspaceId)
     if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
-    return response.ok({ board })
+    return response.ok({ board: boardToPublicDto(board) })
   }
 
+  /**
+   * PUT/PATCH /boards/:id
+   */
   async update({ auth, params, request, response }: HttpContext) {
     const user = auth.user!
     const boardId = Number(params.id)
@@ -90,13 +105,12 @@ export default class BoardsController {
     const canEdit = board.ownerId === user.id || membership.isOwner || membership.isAdmin
     if (!canEdit) return response.unauthorized({ message: 'Not allowed' })
 
-    // payload vine
     const payload = await request.validateUsing(updateBoardValidator)
 
     if (payload.name !== undefined) board.name = payload.name
     if (payload.type !== undefined) board.type = payload.type
 
-    // compat camel/snake + possibilité de null
+    // compat camel/snake + null support
     const backgroundUrl = request.input('backgroundUrl') ?? request.input('background_url')
     if (backgroundUrl !== undefined) {
       board.backgroundUrl = backgroundUrl
@@ -105,9 +119,12 @@ export default class BoardsController {
     }
 
     await board.save()
-    return response.ok({ board })
+    return response.ok({ board: boardToPublicDto(board) })
   }
 
+  /**
+   * DELETE /boards/:id
+   */
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.user!
     const boardId = Number(params.id)

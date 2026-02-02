@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { router } from '@inertiajs/react'
+import { router, useRemember } from '@inertiajs/react' // ✅ add useRemember
 
 import type { AppLayoutProps } from './app_layout_type'
 import { BaseLayout } from '~/layouts/base_layout/base_layout'
@@ -27,9 +27,9 @@ export const AppLayout: FC<AppLayoutProps> = ({
   const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
-  // NEW: second aside (workspace internal nav)
-  const [isWorkspaceNavOpen, setIsWorkspaceNavOpen] = useState(false)
-  const [navWorkspaceId, setNavWorkspaceId] = useState<number | null>(null)
+  // ✅ REMEMBERED state (survit aux visits)
+  const [isWorkspaceNavOpen, setIsWorkspaceNavOpen] = useRemember(false, 'ws-nav-open')
+  const [navWorkspaceId, setNavWorkspaceId] = useRemember<number | null>(null, 'ws-nav-id')
 
   useEffect(() => {
     requireAuth()
@@ -40,24 +40,28 @@ export const AppLayout: FC<AppLayoutProps> = ({
   }, [navWorkspaceId, activeWorkspaceId])
 
   const navigateWorkspace = (workspaceId: number, key: NavKey) => {
-    // Pour l’instant : on reste sur /dashboard et on encode la section en query.
-    // Ça ne casse rien si tu ne l’utilises pas encore côté pages.
-    router.visit(`/dashboard?workspace=${workspaceId}&section=${key}`, { preserveScroll: true })
+    router.visit(`/dashboard?workspace=${workspaceId}&section=${key}`, {
+      preserveScroll: true,
+      preserveState: true, // ✅ keep layout state
+    })
   }
 
   const onWorkspaceClick = (workspaceId: number) => {
-    // Si on clique le workspace déjà actif -> toggle du 2e aside (sans redirection)
     if (activeWorkspaceId && workspaceId === activeWorkspaceId) {
       setNavWorkspaceId(workspaceId)
       setIsWorkspaceNavOpen((v) => !v)
       return
     }
 
-    // Si on clique un autre workspace -> garder l’aside ouvert (ou l’ouvrir) + rediriger
+    // ✅ set desired state BEFORE navigation
     setNavWorkspaceId(workspaceId)
     setIsWorkspaceNavOpen(true)
 
-    router.visit(`/dashboard?workspace=${workspaceId}`, { preserveScroll: true })
+    router.visit(`/dashboard?workspace=${workspaceId}`, {
+      preserveScroll: true,
+      preserveState: true, // ✅ critical
+      // pas besoin de onSuccess maintenant
+    })
   }
 
   const onLogout = async () => {
@@ -77,7 +81,6 @@ export const AppLayout: FC<AppLayoutProps> = ({
 
   return (
     <BaseLayout title={title}>
-      {/* Aside desktop #1 */}
       <WorkspaceSwitcherAside
         className="hidden sm:flex"
         workspaces={workspaces}
@@ -86,7 +89,6 @@ export const AppLayout: FC<AppLayoutProps> = ({
         onCreateClick={() => setIsCreateWorkspaceOpen(true)}
       />
 
-      {/* Aside desktop #2 (workspace internal nav) — mounted for animation */}
       {effectiveWorkspaceId && (
         <WorkspaceNavAside
           className="hidden sm:flex"
@@ -97,42 +99,40 @@ export const AppLayout: FC<AppLayoutProps> = ({
         />
       )}
 
-      {/* Drawer mobile */}
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title="Workspaces">
         <div className="relative">
-  <WorkspaceSwitcherAside
-    inDrawer
-    compactInDrawer
-    workspaces={workspaces}
-    activeWorkspaceId={activeWorkspaceId}
-    onWorkspaceClick={(id) => onWorkspaceClick(id)}
-    onCreateClick={() => setIsCreateWorkspaceOpen(true)}
-  />
+          <WorkspaceSwitcherAside
+            inDrawer
+            compactInDrawer
+            workspaces={workspaces}
+            activeWorkspaceId={activeWorkspaceId}
+            onWorkspaceClick={(id) => onWorkspaceClick(id)}
+            onCreateClick={() => setIsCreateWorkspaceOpen(true)}
+          />
 
-  {/* overlay sympa (tap pour fermer) */}
-  <button
-    type="button"
-    aria-label="Close workspace navigation"
-    onClick={() => setIsWorkspaceNavOpen(false)}
-    className={[
-      'aside-workspace-nav-overlay',
-      isWorkspaceNavOpen ? 'aside-workspace-nav-overlay-open' : 'aside-workspace-nav-overlay-closed',
-    ].join(' ')}
-  />
+          <button
+            type="button"
+            aria-label="Close workspace navigation"
+            onClick={() => setIsWorkspaceNavOpen(false)}
+            className={[
+              'aside-workspace-nav-overlay',
+              isWorkspaceNavOpen
+                ? 'aside-workspace-nav-overlay-open'
+                : 'aside-workspace-nav-overlay-closed',
+            ].join(' ')}
+          />
 
-  {/* nav interne qui “sort” à droite de la colonne workspace */}
-  {effectiveWorkspaceId && (
-    <WorkspaceNavAside
-      variant="drawer"
-      className="absolute left-14 top-2"
-      workspaceId={effectiveWorkspaceId}
-      activeKey={null}
-      isOpen={isWorkspaceNavOpen}
-      onNavigate={(key) => navigateWorkspace(effectiveWorkspaceId, key)}
-    />
-  )}
-</div>
-
+          {effectiveWorkspaceId && (
+            <WorkspaceNavAside
+              variant="drawer"
+              className="absolute left-14 top-2"
+              workspaceId={effectiveWorkspaceId}
+              activeKey={null}
+              isOpen={isWorkspaceNavOpen}
+              onNavigate={(key) => navigateWorkspace(effectiveWorkspaceId, key)}
+            />
+          )}
+        </div>
       </Drawer>
 
       <WorkspaceCreateModal
@@ -148,8 +148,9 @@ export const AppLayout: FC<AppLayoutProps> = ({
         isLoggingOut={isLoggingOut}
       />
 
-      {/* Main content */}
-      <div className={`transition-[padding] duration-250 ease-out ${isWorkspaceNavOpen ? 'sm:pl-32' : 'sm:pl-16'}`}>
+      <div
+        className={`transition-[padding] duration-250 ease-out ${isWorkspaceNavOpen ? 'sm:pl-32' : 'sm:pl-16'}`}
+      >
         <div className="page px-3 sm:px-6 py-4 sm:py-6">{children}</div>
       </div>
     </BaseLayout>

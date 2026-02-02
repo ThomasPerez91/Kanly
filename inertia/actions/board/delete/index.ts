@@ -10,6 +10,6 @@ export const deleteBoardAction = (csrfToken: string) =>
 
     if (!res.ok) return { error: res.error }
 
-    router.reload({ preserveScroll: true })
+    router.reload({ preserveUrl: true })
     return { data: undefined }
   })

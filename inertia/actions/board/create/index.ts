@@ -29,6 +29,6 @@ export const createBoardAction = (csrfToken: string) =>
       return { error: res.error }
     }
 
-    router.reload({ preserveScroll: true })
+    router.reload({ preserveUrl: true })
     return { data: res.data }
   })

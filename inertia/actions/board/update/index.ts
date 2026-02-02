@@ -16,7 +16,8 @@ export const updateBoardAction = (csrfToken: string) =>
     if (data.name !== undefined) payload.name = data.name.trim()
     if (data.type !== undefined) payload.type = data.type
     if (data.backgroundUrl !== undefined) {
-      payload.backgroundUrl = (data.backgroundUrl ?? null) ? String(data.backgroundUrl).trim() : null
+      payload.backgroundUrl =
+        (data.backgroundUrl ?? null) ? String(data.backgroundUrl).trim() : null
     }
 
     const res = await http.patch<ReturnType, typeof payload>(`/boards/${data.id}`, payload, {
@@ -29,6 +30,6 @@ export const updateBoardAction = (csrfToken: string) =>
       return { error: res.error }
     }
 
-    router.reload({ preserveScroll: true })
+    router.reload({ preserveUrl: true })
     return { data: res.data }
   })

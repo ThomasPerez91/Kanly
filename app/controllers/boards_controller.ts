@@ -3,7 +3,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Board from '#models/board'
 import Workspace from '#models/workspace'
 import { WorkspaceUserRoles } from '#enums/workspace_user_roles'
-import { createBoardValidator, updateBoardValidator } from '#validators/board_validator'
+import { createBoardValidator, updateBoardValidator } from '#validators/board'
 import { boardToPublicDto } from '#dtos/board/board_public_dto'
 import type { BoardPublicDTO } from '#dtos/board/board_public_dto_type'
 
@@ -56,11 +56,10 @@ export default class BoardsController {
     const payload = await request.validateUsing(createBoardValidator)
 
     // compat camel/snake
-    const backgroundUrl =
-      (request.input('backgroundUrl') ??
-        request.input('background_url') ??
-        payload.backgroundUrl ??
-        null) as string | null
+    const backgroundUrl = (request.input('backgroundUrl') ??
+      request.input('background_url') ??
+      payload.backgroundUrl ??
+      null) as string | null
 
     const board = await Board.create({
       workspaceId,

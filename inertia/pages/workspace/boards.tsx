@@ -6,7 +6,7 @@ import { WorkspaceBoardsHeader } from '~/components/workspace_boards/workspace_b
 import { BoardSearchFilter } from '~/components/workspace_boards/board_search_filter'
 import { WorkspaceBoardRow } from '~/components/workspace_boards/workspace_board_row'
 
-const BoardsPage: FC<WorkspaceBoardsPageProps> = ({ workspaceId, boards }) => {
+const BoardsPage: FC<WorkspaceBoardsPageProps> = ({ workspaceId, archived, boards }) => {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
@@ -17,7 +17,7 @@ const BoardsPage: FC<WorkspaceBoardsPageProps> = ({ workspaceId, boards }) => {
 
   return (
     <div className="space-y-4">
-      <WorkspaceBoardsHeader title="Boards" count={boards.length} />
+      <WorkspaceBoardsHeader workspaceId={workspaceId} archived={archived} count={boards.length} />
 
       <BoardSearchFilter value={query} onChange={setQuery} />
 
@@ -27,7 +27,9 @@ const BoardsPage: FC<WorkspaceBoardsPageProps> = ({ workspaceId, boards }) => {
         ))}
 
         {filtered.length === 0 ? (
-          <div className="card p-4 text-sm text-text-muted">No boards match your search.</div>
+          <div className="card p-4 text-sm text-text-muted">
+            {archived ? 'No archived boards.' : 'No active boards.'}
+          </div>
         ) : null}
       </div>
     </div>

@@ -7,6 +7,7 @@ export type BoardPublic = {
   name: string
   type: BoardType
   backgroundUrl: string | null
+  archived: boolean
   createdAt: string
   updatedAt: string
 }

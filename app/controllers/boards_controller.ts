@@ -27,6 +27,7 @@ async function getWorkspaceMembership(userId: number, workspaceId: number) {
 export default class BoardsController {
   /**
    * GET /workspaces/:workspaceId/boards
+   * (Attention: cette route va être déplacée vers WorkspacePagesController pour éviter le conflit page/API)
    */
   async index({ auth, params, response }: HttpContext) {
     const user = auth.user!
@@ -35,9 +36,7 @@ export default class BoardsController {
     const membership = await getWorkspaceMembership(user.id, workspaceId)
     if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
-    const boards = await Board.query()
-      .where('workspace_id', workspaceId)
-      .orderBy('created_at', 'desc')
+    const boards = await Board.query().where('workspace_id', workspaceId).orderBy('created_at', 'desc')
 
     const data: BoardPublicDTO[] = boards.map(boardToPublicDto)
     return response.ok({ boards: data })
@@ -67,6 +66,7 @@ export default class BoardsController {
       name: payload.name,
       type: payload.type,
       backgroundUrl,
+      archived: payload.archived ?? false,
     })
 
     return response.created({ board: boardToPublicDto(board) })
@@ -115,6 +115,15 @@ export default class BoardsController {
       board.backgroundUrl = backgroundUrl
     } else if (payload.backgroundUrl !== undefined) {
       board.backgroundUrl = payload.backgroundUrl
+    }
+
+    // PATCH archived si présent
+    // (On supporte aussi request.input(...) pour compat clients divers)
+    const archivedRaw = request.input('archived')
+    if (archivedRaw !== undefined) {
+      board.archived = Boolean(archivedRaw)
+    } else if (payload.archived !== undefined) {
+      board.archived = payload.archived
     }
 
     await board.save()

@@ -11,6 +11,7 @@ export const createBoardValidator = vine.compile(
     // nullable => autorise explicitement null
     // optional => peut être absent
     backgroundUrl: vine.string().trim().url().nullable().optional(),
+    archived: vine.boolean().optional(),
   })
 )
 
@@ -19,5 +20,6 @@ export const updateBoardValidator = vine.compile(
     name: vine.string().trim().minLength(1).maxLength(150).optional(),
     type: vine.enum(Object.values(BoardTypes)).optional(),
     backgroundUrl: vine.string().trim().url().nullable().optional(),
+    archived: vine.boolean().optional(),
   })
 )

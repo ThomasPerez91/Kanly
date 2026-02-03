@@ -15,10 +15,13 @@ export const updateBoardAction = (csrfToken: string) =>
 
     if (data.name !== undefined) payload.name = data.name.trim()
     if (data.type !== undefined) payload.type = data.type
+
     if (data.backgroundUrl !== undefined) {
-      payload.backgroundUrl =
-        (data.backgroundUrl ?? null) ? String(data.backgroundUrl).trim() : null
+      const trimmed = (data.backgroundUrl ?? '').toString().trim()
+      payload.backgroundUrl = trimmed ? trimmed : null
     }
+
+    if (data.archived !== undefined) payload.archived = data.archived
 
     const res = await http.patch<ReturnType, typeof payload>(`/boards/${data.id}`, payload, {
       csrfToken,

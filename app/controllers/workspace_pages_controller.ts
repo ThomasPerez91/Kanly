@@ -23,11 +23,26 @@ async function getWorkspaceMembership(userId: number, workspaceId: number) {
   return { membership, role, isOwner, isAdmin }
 }
 
+function parseArchivedFlag(input: unknown): boolean {
+  // default: false
+  if (input === undefined || input === null || input === '') return false
+
+  const v = String(input).toLowerCase().trim()
+  if (v === '1' || v === 'true' || v === 'yes' || v === 'on') return true
+  if (v === '0' || v === 'false' || v === 'no' || v === 'off') return false
+
+  return false
+}
+
 export default class WorkspacePagesController {
   /**
    * GET /workspaces/:workspaceId/boards
    * - HTML: render inertia workspace/boards + boards
    * - JSON: { boards }
+   *
+   * Query:
+   * - ?archived=1 => archived boards
+   * - (default)   => active boards
    */
   async boards({ auth, params, request, response, inertia }: HttpContext) {
     const user = auth.user!
@@ -36,26 +51,29 @@ export default class WorkspacePagesController {
     const membership = await getWorkspaceMembership(user.id, workspaceId)
     if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
-    const boards = await Board.query().where('workspace_id', workspaceId).orderBy('created_at', 'desc')
+    const archived = parseArchivedFlag(request.qs().archived)
+
+    const boards = await Board.query()
+      .where('workspace_id', workspaceId)
+      .where('archived', archived)
+      .orderBy('created_at', 'desc')
+
     const data: BoardPublicDTO[] = boards.map(boardToPublicDto)
 
-    // Si le client demande du JSON (fetch / actions), on répond JSON
+    // JSON for API clients (your http.ts sends Accept: application/json)
     const accepted = request.accepts(['json', 'html'])
     if (accepted === 'json') {
       return response.ok({ boards: data })
     }
 
-    // Sinon, page inertia
+    // Inertia page
     return inertia.render('workspace/boards', {
       workspaceId,
+      archived, // 👈 important for header toggle UI
       boards: data,
     })
   }
 
-  /**
-   * GET /workspaces/:workspaceId/views
-   * (pas de data pour le moment)
-   */
   async views({ auth, params, response, inertia }: HttpContext) {
     const user = auth.user!
     const workspaceId = Number(params.workspaceId)
@@ -66,10 +84,6 @@ export default class WorkspacePagesController {
     return inertia.render('workspace/views', { workspaceId })
   }
 
-  /**
-   * GET /workspaces/:workspaceId/activity
-   * (pas de data pour le moment)
-   */
   async activity({ auth, params, response, inertia }: HttpContext) {
     const user = auth.user!
     const workspaceId = Number(params.workspaceId)

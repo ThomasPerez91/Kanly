@@ -20,7 +20,8 @@ export const BoardUpdateSchema = z
         },
         { error: 'Please enter a valid URL (http/https)' }
       ),
+    archived: z.boolean().optional(),
   })
-  .refine((d) => d.name !== undefined || d.type !== undefined || d.backgroundUrl !== undefined, {
+  .refine((d) => d.name !== undefined || d.type !== undefined || d.backgroundUrl !== undefined || d.archived !== undefined, {
     error: 'Please provide at least one field to update',
   })

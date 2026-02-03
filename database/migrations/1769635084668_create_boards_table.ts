@@ -27,12 +27,14 @@ export default class extends BaseSchema {
       // Values enforced at application level via BoardTypes enum
       table.string('type', 30).notNullable()
       table.text('background_url').nullable()
+      table.boolean('archived').notNullable().defaultTo(false)
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
 
       table.index(['workspace_id'])
       table.index(['owner_id'])
+      table.index(['archived'])
     })
   }
 

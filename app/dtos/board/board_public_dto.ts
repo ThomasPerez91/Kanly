@@ -9,6 +9,7 @@ export function boardToPublicDto(board: Board): BoardPublicDTO {
     name: board.name,
     type: board.type,
     backgroundUrl: board.backgroundUrl,
+    archived: board.archived,
     createdAt: board.createdAt.toISO()!,
     updatedAt: board.updatedAt.toISO()!,
   }

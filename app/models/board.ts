@@ -25,6 +25,9 @@ export default class Board extends BaseModel {
   @column()
   declare backgroundUrl: string | null
 
+  @column()
+  declare archived: boolean
+
   @belongsTo(() => Workspace, { foreignKey: 'workspaceId' })
   declare workspace: BelongsTo<typeof Workspace>
 

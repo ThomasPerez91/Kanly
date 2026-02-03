@@ -7,6 +7,7 @@ export type BoardPublicDTO = {
   name: string
   type: BoardTypes
   backgroundUrl: string | null
+  archived: boolean
   createdAt: string
   updatedAt: string
 }

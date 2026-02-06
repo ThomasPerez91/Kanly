@@ -36,7 +36,9 @@ export default class BoardsController {
     const membership = await getWorkspaceMembership(user.id, workspaceId)
     if (!membership) return response.unauthorized({ message: 'Not allowed' })
 
-    const boards = await Board.query().where('workspace_id', workspaceId).orderBy('created_at', 'desc')
+    const boards = await Board.query()
+      .where('workspace_id', workspaceId)
+      .orderBy('created_at', 'desc')
 
     const data: BoardPublicDTO[] = boards.map(boardToPublicDto)
     return response.ok({ boards: data })

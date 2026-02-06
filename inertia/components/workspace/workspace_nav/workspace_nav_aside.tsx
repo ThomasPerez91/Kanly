@@ -24,16 +24,22 @@ export const WorkspaceNavAside: FC<WorkspaceNavAsideProps> = ({
   onNavigate,
   isOpen,
   variant = 'desktop',
+  disableAnimation = false,
 }) => {
   const base = variant === 'drawer' ? 'aside-workspace-nav-drawer' : 'aside-workspace-nav'
 
+  // ✅ when animations are disabled, we use instant states without transitions
+  const openClass = disableAnimation
+    ? 'translate-x-0 opacity-100 pointer-events-auto'
+    : 'aside-workspace-nav-open'
+
+  const closedClass = disableAnimation
+    ? '-translate-x-full opacity-0 pointer-events-none'
+    : 'aside-workspace-nav-closed'
+
   return (
     <aside
-      className={[
-        base,
-        isOpen ? 'aside-workspace-nav-open' : 'aside-workspace-nav-closed',
-        className ?? '',
-      ].join(' ')}
+      className={[base, isOpen ? openClass : closedClass, className ?? ''].join(' ')}
       aria-label="Workspace navigation"
     >
       <div className="flex flex-col gap-3">

@@ -24,7 +24,6 @@ export const BoardEditModal: FC<BoardEditModalProps> = ({ open, onClose, board, 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Reset state when modal opens or board changes
   useEffect(() => {
     if (!open) return
     setName(board.name)
@@ -45,32 +44,36 @@ export const BoardEditModal: FC<BoardEditModalProps> = ({ open, onClose, board, 
   const onSubmit = async () => {
     if (isSubmitting) return
 
-    setIsSubmitting(true)
-    setError(null)
-
-    // Only send changed fields (clean PATCH)
     const nextName = name.trim()
-    const nextBg = backgroundUrl.trim() ? backgroundUrl.trim() : null
+    if (!nextName) {
+      setError('Please enter a board name')
+      return
+    }
 
-    const payload: {
-      boardId: number
-      name?: string
-      type?: BoardType
-      backgroundUrl?: string | null
-    } = { boardId: board.id }
+    const nextBgTrimmed = (backgroundUrl ?? '').toString().trim()
+    const nextBg = nextBgTrimmed ? nextBgTrimmed : null
 
-    if (nextName !== board.name) payload.name = nextName
-    if (type !== board.type) payload.type = type
-    if ((board.backgroundUrl ?? null) !== nextBg) payload.backgroundUrl = nextBg
+    // Determine changed fields
+    const nameChanged = nextName !== board.name
+    const typeChanged = type !== board.type
+    const bgChanged = (board.backgroundUrl ?? null) !== nextBg
 
-    // Nothing changed => just close
-    if (!payload.name && !payload.type && payload.backgroundUrl === undefined) {
-      setIsSubmitting(false)
+    // Nothing changed => close (no request)
+    if (!nameChanged && !typeChanged && !bgChanged) {
       close()
       return
     }
 
-    const res = await action(payload)
+    setIsSubmitting(true)
+    setError(null)
+
+    const res = await action({
+      id: board.id,
+      ...(nameChanged ? { name: nextName } : {}),
+      ...(typeChanged ? { type } : {}),
+      ...(bgChanged ? { backgroundUrl: nextBg } : {}),
+    })
+
     setIsSubmitting(false)
 
     if ((res as any).fieldErrors) {

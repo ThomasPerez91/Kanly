@@ -1,6 +1,8 @@
+// BoardsSection.tsx
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { FiPlus, FiSettings } from 'react-icons/fi'
+import { router } from '@inertiajs/react'
 
 import type { BoardsSectionProps } from './boards_section_type'
 import type { BoardPublic } from '~/lib/types/board_public'
@@ -12,7 +14,6 @@ import { BoardCreateModal } from '~/components/board/board_create_modal/board_cr
 
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
 import { listBoardsAction } from '~/actions/board/list'
-import { router } from '@inertiajs/react'
 
 export const BoardsSection: FC<BoardsSectionProps> = ({ workspaceId }) => {
   const { csrfToken } = useAuthUser()
@@ -21,7 +22,6 @@ export const BoardsSection: FC<BoardsSectionProps> = ({ workspaceId }) => {
   const [boards, setBoards] = useState<BoardPublic[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   const reload = async () => {
@@ -62,24 +62,26 @@ export const BoardsSection: FC<BoardsSectionProps> = ({ workspaceId }) => {
     <section className="card p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-900 text-text">Boards</h2>
-        <span
+
+        <button
+          type="button"
           className={[
             'h-9 w-9 rounded-lg inline-flex items-center justify-center',
             'text-text-muted hover:text-text hover:bg-black/5 transition',
             'focus:outline-none focus:(ring-4 ring-brand-500/20)',
           ].join(' ')}
           aria-label="Boards settings"
-          onClick={() => router.visit('/settings')}
+          onClick={() => router.visit(`/workspaces/${workspaceId}/boards`)}
         >
           <FiSettings className="h-5 w-5" />
-        </span>
+        </button>
       </div>
 
       {isLoading ? (
-        <div className="boards-row-wrap">
+        <div className="mt-4">
           <div className="boards-row">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="board-card board-card-size overflow-hidden">
+              <div key={i} className="board-card board-card-size">
                 <Skeleton className="h-full w-full rounded-none" label="Board" />
               </div>
             ))}
@@ -103,21 +105,25 @@ export const BoardsSection: FC<BoardsSectionProps> = ({ workspaceId }) => {
           />
         </div>
       ) : (
-        <div className="boards-row-wrap">
+        <div className="mt-4">
           <div className="boards-row">
             {boards.map((b) => (
-              <BoardCard key={b.id} board={b} />
+              // ✅ wrapper pour appliquer hover/ombre sans dépendre du contenu interne
+              <div key={b.id} className="board-card board-card-size board-card-hover">
+                <BoardCard board={b} />
+              </div>
             ))}
 
+            {/* Add board */}
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="board-add-card"
+              className="board-add-card group"
               aria-label="Create board"
             >
               <div className="board-add-inner">
                 <div className="board-add-icon">
-                  <FiPlus className="text-2xl" />
+                  <FiPlus className="text-xl" />
                 </div>
                 <div className="board-add-label">New board</div>
               </div>

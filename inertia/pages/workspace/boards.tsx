@@ -1,38 +1,40 @@
 import type { FC } from 'react'
-import { useMemo, useState } from 'react'
 
 import type { WorkspaceBoardsPageProps } from './boards_type'
 import { WorkspaceBoardsHeader } from '~/components/workspace_boards/workspace_boards_header'
-import { BoardSearchFilter } from '~/components/workspace_boards/board_search_filter'
 import { WorkspaceBoardRow } from '~/components/workspace_boards/workspace_board_row'
+import { useWorkspaces } from '~/hooks/workspaces/use_workspaces'
+import { Head } from '@inertiajs/react'
 
 const BoardsPage: FC<WorkspaceBoardsPageProps> = ({ workspaceId, archived, boards }) => {
-  const [query, setQuery] = useState('')
+  const { workspaces } = useWorkspaces()
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return boards
-    return boards.filter((b) => b.name.toLowerCase().includes(q))
-  }, [boards, query])
+  const workspaceName = workspaces.find((w) => w.id === workspaceId)?.name ?? 'Workspace'
 
   return (
-    <div className="space-y-4">
-      <WorkspaceBoardsHeader workspaceId={workspaceId} archived={archived} count={boards.length} />
+    <>
+      <Head title={`${workspaceName} - Boards`} />
+      <div className="space-y-4">
+        <WorkspaceBoardsHeader
+          workspaceId={workspaceId}
+          workspaceName={workspaceName}
+          archived={archived}
+          count={boards.length}
+        />
 
-      <BoardSearchFilter value={query} onChange={setQuery} />
+        <div className="space-y-3">
+          {boards.map((board) => (
+            <WorkspaceBoardRow key={board.id} workspaceId={workspaceId} board={board} />
+          ))}
 
-      <div className="space-y-3">
-        {filtered.map((board) => (
-          <WorkspaceBoardRow key={board.id} workspaceId={workspaceId} board={board} />
-        ))}
-
-        {filtered.length === 0 ? (
-          <div className="card p-4 text-sm text-text-muted">
-            {archived ? 'No archived boards.' : 'No active boards.'}
-          </div>
-        ) : null}
+          {boards.length === 0 ? (
+            <div className="card p-4 text-sm text-text-muted">
+              {archived ? 'No archived boards.' : 'No active boards.'}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -1,40 +1,46 @@
 import type { FC } from 'react'
-import { router } from '@inertiajs/react'
 import { FiArchive } from 'react-icons/fi'
+import { router } from '@inertiajs/react'
 
 type Props = {
   workspaceId: number
+  workspaceName: string
   archived: boolean
-  count?: number
+  count: number
 }
 
-export const WorkspaceBoardsHeader: FC<Props> = ({ workspaceId, archived, count }) => {
-  const toggle = () => {
-    const nextArchived = !archived
+export const WorkspaceBoardsHeader: FC<Props> = ({
+  workspaceId,
+  workspaceName,
+  archived,
+  count,
+}) => {
+  const label = count < 2 ? 'board' : 'boards'
 
+  const toggleArchived = () => {
     router.visit(`/workspaces/${workspaceId}/boards`, {
-      method: 'get',
-      data: nextArchived ? { archived: 1 } : {}, // archived absent => active boards
       preserveScroll: true,
-      preserveState: false, // on veut refresh complet de la liste
+      preserveState: true,
+      data: archived ? {} : { archived: 1 },
     })
   }
 
   return (
-    <div className="flex items-end justify-between gap-3">
-      <div>
-        <div className="text-xl font-950 text-text">
-          {archived ? 'Archived boards' : 'Boards'}
+    <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="h2 truncate">{workspaceName} - Boards</h1>
+        <div className="mt-1 text-sm text-text-muted">
+          {count} {label}
         </div>
-
-        {typeof count === 'number' ? (
-          <div className="mt-1 text-sm text-text-muted">{count} board(s)</div>
-        ) : null}
       </div>
 
-      <button type="button" className="btn-base btn-sm btn-secondary" onClick={toggle}>
-        <FiArchive className="text-base" />
-        <span className="btn-label">{archived ? 'Show active' : 'Show archived'}</span>
+      <button
+        type="button"
+        onClick={toggleArchived}
+        className="btn-base btn-sm btn-secondary gap-2"
+      >
+        <FiArchive className="text-lg" />
+        {archived ? 'Hide archived' : 'Show archived'}
       </button>
     </div>
   )

@@ -60,16 +60,14 @@ export default class WorkspacePagesController {
 
     const data: BoardPublicDTO[] = boards.map(boardToPublicDto)
 
-    // JSON for API clients (your http.ts sends Accept: application/json)
     const accepted = request.accepts(['json', 'html'])
     if (accepted === 'json') {
       return response.ok({ boards: data })
     }
 
-    // Inertia page
     return inertia.render('workspace/boards', {
       workspaceId,
-      archived, // 👈 important for header toggle UI
+      archived,
       boards: data,
     })
   }

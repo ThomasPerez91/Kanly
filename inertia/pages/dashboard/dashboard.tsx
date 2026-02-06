@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from '~/components/ui/modal/confirm_delete_modal'
 
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
 import { deleteWorkspaceAction } from '~/actions/workspace/delete'
+import { Head } from '@inertiajs/react'
 
 type DashboardPageProps = {
   workspaces: WorkspacePublic[]
@@ -62,6 +63,7 @@ const DashboardPage: DashboardPageComponent = ({ workspaces, activeWorkspaceId }
     <div className="space-y-6">
       {activeWorkspace ? (
         <>
+          <Head title={`${activeWorkspace.name} - Dashboard`} />
           <WorkspaceHeader
             workspace={activeWorkspace}
             onEdit={() => setIsEditOpen(true)}
@@ -119,14 +121,6 @@ const DashboardPage: DashboardPageComponent = ({ workspaces, activeWorkspaceId }
   )
 }
 
-DashboardPage.layout = (page: any) => (
-  <AppLayout
-    title="Dashboard"
-    workspaces={page.props.workspaces}
-    activeWorkspaceId={page.props.activeWorkspaceId}
-  >
-    {page}
-  </AppLayout>
-)
+DashboardPage.layout = (page: any) => <AppLayout title="Dashboard">{page}</AppLayout>
 
 export default DashboardPage

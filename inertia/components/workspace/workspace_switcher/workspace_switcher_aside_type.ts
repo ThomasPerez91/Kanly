@@ -4,7 +4,7 @@ export type WorkspaceSwitcherAsideProps = {
   className?: string
   inDrawer?: boolean
   compactInDrawer?: boolean
-  workspaces: WorkspacePublic[]
+  workspaces?: WorkspacePublic[]
   activeWorkspaceId?: number | null
   onCreateClick: () => void
   onWorkspaceClick?: (workspaceId: number) => void

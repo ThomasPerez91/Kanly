@@ -13,15 +13,13 @@ type Props = {
 
 export const WorkspaceBoardRow: FC<Props> = ({ workspaceId, board }) => {
   const goToBoard = (boardId: number) => {
-    // À adapter plus tard quand tu auras une page board dédiée.
-    // Pour l’instant on navigue vers Views (ou tu peux no-op).
     router.visit(`/workspaces/${workspaceId}/views?board=${boardId}`)
   }
 
   return (
     <>
-      {/* DESKTOP */}
-      <div className="hidden md:flex items-center gap-4 card p-3">
+      {/* DESKTOP: row full-width + card IDENTIQUE dashboard (no shrink) */}
+      <div className="hidden md:flex items-center gap-6 card px-4 py-3">
         <div className="shrink-0">
           <BoardCard board={board} onClick={goToBoard} />
         </div>
@@ -38,7 +36,12 @@ export const WorkspaceBoardRow: FC<Props> = ({ workspaceId, board }) => {
       {/* MOBILE */}
       <div className="md:hidden card overflow-hidden">
         <div className="p-0">
-          <BoardCard board={board} onClick={goToBoard} />
+          <BoardCard
+            board={board}
+            onClick={goToBoard}
+            fullWidth
+            className="rounded-none border-0"
+          />
         </div>
 
         <div className="p-3">

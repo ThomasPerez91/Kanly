@@ -31,7 +31,6 @@ export const BoardActionsMenu: FC<Props> = ({ workspaceId, board, variant }) => 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
 
   const showActivities = () => {
-    // tu as déjà la page backend
     window.location.href = `/workspaces/${workspaceId}/activity?board=${board.id}`
   }
 
@@ -63,7 +62,7 @@ export const BoardActionsMenu: FC<Props> = ({ workspaceId, board, variant }) => 
     setIsDeleting(false)
   }
 
-  // MOBILE footer : boutons avec icône + label
+  // MOBILE footer actions
   if (variant === 'mobile') {
     return (
       <>
@@ -118,12 +117,13 @@ export const BoardActionsMenu: FC<Props> = ({ workspaceId, board, variant }) => 
     )
   }
 
-  // DESKTOP : icône settings + dropdown
+  // DESKTOP dropdown (fix z-index)
   return (
     <>
       <Dropdown
         placement="bottom-end"
         widthClassName="w-64"
+        panelClassName="z-60" // ✅ keep dropdown above other rows/buttons
         trigger={
           <span className="h-10 w-10 inline-flex items-center justify-center rounded-xl border border-border bg-surface hover:bg-bg transition">
             <FiMoreVertical />

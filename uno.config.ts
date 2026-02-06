@@ -241,19 +241,25 @@ export default defineConfig({
     ['boards-row-wrap', 'mt-4 -mx-2'],
     [
       'boards-row',
-      'flex gap-3 overflow-x-auto py-2 px-2 scroll-smooth no-scrollbar [scroll-padding-inline:8px]',
+      'flex gap-3 overflow-x-auto overflow-y-visible py-2 px-2 pb-5 scroll-smooth no-scrollbar [scroll-padding-inline:8px]',
     ],
 
     // board card (carousel)
     [
       'board-card',
-      'relative overflow-hidden rounded-xl border border-border bg-surface shadow-[0_10px_30px_rgba(15,23,42,0.08)] flex-none',
+      'relative overflow-hidden rounded-xl bg-surface flex-none ring-1 ring-border/60 border-0 shadow-none transition will-change-transform',
     ],
-    ['board-card-size', 'h-24 w-[68vw] sm:w-[calc((100%-4*12px)/5)]'],
+
+    [
+      'board-card-hover',
+      'hover:-translate-y-0.5 hover:shadow-[10px_12px_22px_-14px_rgba(15,23,42,0.28)]',
+    ],
+    ['board-card-size', 'h-24 w-[68vw] sm:w-[221px] shrink-0'],
     [
       'board-bg',
-      'absolute inset-0 bg-cover bg-center transition-transform duration-200 ease-out group-hover:scale-110',
+      'absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-out sm:group-hover:scale-110',
     ],
+
     [
       'board-overlay',
       'absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-black/0 opacity-95',
@@ -267,12 +273,12 @@ export default defineConfig({
     ],
     [
       'board-add-card',
-      'board-card board-card-size group hover:bg-bg transition focus:outline-none focus:(ring-4 ring-brand-500/20)',
+      'board-card board-card-size board-card-hover hover:bg-bg transition focus:outline-none focus:(ring-4 ring-brand-500/20)',
     ],
     ['board-add-inner', 'h-full flex flex-col items-center justify-center'],
     [
       'board-add-icon',
-      'h-11 w-11 rounded-2xl bg-brand-600 text-white flex items-center justify-center group-hover:bg-brand-700 transition',
+      'h-10 w-10 rounded-xl bg-brand-600 text-white flex items-center justify-center group-hover:bg-brand-700 transition',
     ],
     ['board-add-label', 'mt-2 text-xs font-900 text-text'],
 

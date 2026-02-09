@@ -1,12 +1,7 @@
 import type { FC } from 'react'
-import type { BoardType } from '~/lib/types/board_public'
-import { boardTypeIcon, boardTypeLabel } from './board_type_picker'
 
-type BoardPreviewProps = {
-  name: string
-  type: BoardType
-  backgroundUrl: string
-}
+import type { BoardPreviewProps } from './board_preview_type'
+import { boardTypeIconNode, boardTypeLabel } from '~/components/board/board_type/board_type'
 
 export const BoardPreview: FC<BoardPreviewProps> = ({ name, type, backgroundUrl }) => {
   const bg = backgroundUrl.trim() ? `url(${backgroundUrl.trim()})` : null
@@ -34,7 +29,7 @@ export const BoardPreview: FC<BoardPreviewProps> = ({ name, type, backgroundUrl 
               <div className="text-sm font-900 text-white drop-shadow">{previewTitle}</div>
 
               <div className="mt-1 inline-flex items-center gap-2 text-white/90 text-xs font-800">
-                <span className="board-type-badge">{boardTypeIcon(type)}</span>
+                <span className="board-type-badge">{boardTypeIconNode(type)}</span>
                 <span className="drop-shadow">{boardTypeLabel(type)}</span>
               </div>
             </div>

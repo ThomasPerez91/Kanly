@@ -1,11 +1,7 @@
 import type { FC } from 'react'
 import { FiImage } from 'react-icons/fi'
 
-type BoardBackgroundFieldProps = {
-  value: string
-  onChange: (val: string) => void
-  onOpenPicker: () => void
-}
+import type { BoardBackgroundFieldProps } from './board_background_field_type'
 
 export const BoardBackgroundField: FC<BoardBackgroundFieldProps> = ({
   value,

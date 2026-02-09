@@ -1,26 +1,9 @@
 import type { FC } from 'react'
-import { FiColumns } from 'react-icons/fi'
-import { PiKanbanFill } from 'react-icons/pi'
-import { HiMiniTableCells } from 'react-icons/hi2'
-import { MdViewTimeline } from 'react-icons/md'
-import { IoCalendar } from 'react-icons/io5'
 
-import type { BoardPublic, BoardType } from '~/lib/types/board_public'
+import type { BoardCardListProps } from './board_card_list_type'
+import { BoardTypeIcon, boardTypeLabel } from '~/components/board/board_type/board_type'
 
-type Props = {
-  board: BoardPublic
-  onClick?: (boardId: number) => void
-}
-
-const typeIcon = (type: BoardType) => {
-  if (type === 'kanban') return <PiKanbanFill />
-  if (type === 'table') return <HiMiniTableCells />
-  if (type === 'roadmap') return <MdViewTimeline />
-  if (type === 'calendar') return <IoCalendar />
-  return <FiColumns />
-}
-
-export const BoardCardList: FC<Props> = ({ board, onClick }) => {
+export const BoardCardList: FC<BoardCardListProps> = ({ board, onClick }) => {
   const bg = board.backgroundUrl?.trim() ? `url(${board.backgroundUrl})` : undefined
 
   return (
@@ -44,8 +27,8 @@ export const BoardCardList: FC<Props> = ({ board, onClick }) => {
       <div className="min-w-0">
         <div className="text-sm font-900 text-text truncate">{board.name}</div>
         <div className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-text-muted font-700">
-          {typeIcon(board.type)}
-          <span className="capitalize">{board.type}</span>
+          <BoardTypeIcon type={board.type} />
+          <span className="drop-shadow">{boardTypeLabel(board.type)}</span>
         </div>
       </div>
     </button>

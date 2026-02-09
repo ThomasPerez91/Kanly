@@ -1,28 +1,10 @@
 import type { FC } from 'react'
-import type { BoardType } from '~/lib/types/board_public'
+
+import type { BoardFormProps } from './board_form_type'
+
 import { Button } from '~/components/ui/button/button'
 import { BoardTypePicker } from './board_type_picker'
 import { BoardBackgroundField } from './board_background_field'
-
-type BoardFormProps = {
-  name: string
-  onNameChange: (val: string) => void
-
-  type: BoardType
-  onTypeChange: (val: BoardType) => void
-
-  backgroundUrl: string
-  onBackgroundUrlChange: (val: string) => void
-  onOpenBackgroundPicker: () => void
-
-  error?: string | null
-
-  submitLabel: string
-  submitting: boolean
-
-  onCancel: () => void
-  onSubmit: () => void
-}
 
 export const BoardForm: FC<BoardFormProps> = ({
   name,

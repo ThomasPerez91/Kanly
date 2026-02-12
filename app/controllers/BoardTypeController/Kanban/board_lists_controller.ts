@@ -5,11 +5,14 @@ import Board from '#models/board'
 import BoardList from '#models/board_list'
 import Workspace from '#models/workspace'
 
-import { boardListToPublicDto } from '#dtos/lists/board_list_public_dto'
+import { boardListToPublicDto } from '#dtos/list/board_list_public_dto'
 import { DefaultList } from '#enums/default_list'
 import { BoardListVisibility } from '#enums/board_list_visibility'
 import { ListCreator } from '#services/lists/list_creator'
-import { generateBoardListsValidator, reorderBoardListsValidator } from '#validators/board_lists_validator'
+import {
+  generateBoardListsValidator,
+  reorderBoardListsValidator,
+} from '#validators/board_list_validator'
 
 @inject()
 export default class BoardListsController {
@@ -86,7 +89,7 @@ export default class BoardListsController {
       .whereIn('id', payload.orderedIds)
 
     const byId = new Map(lists.map((l) => [l.id, l]))
-    const missing = payload.orderedIds.filter((id) => !byId.has(id))
+    const missing = payload.orderedIds.filter((id: number) => !byId.has(id))
     if (missing.length > 0) {
       return response.badRequest({ message: 'Some lists do not belong to this board.', missing })
     }
@@ -98,8 +101,15 @@ export default class BoardListsController {
         const list = byId.get(id)!
         list.position = pos
         pos += 100
+        await list.save()
       }
-      await BoardList.bulkSave(payload.orderedIds.map((id) => byId.get(id)!))
+      await BoardList.transaction(async (trx) => {
+        for (const id of payload.orderedIds) {
+          const list = byId.get(id)!
+          list.useTransaction(trx)
+          await list.save()
+        }
+      })
     }
 
     const fresh = await BoardList.query().where('board_id', board.id).orderBy('position', 'asc')
@@ -164,7 +174,7 @@ export default class BoardListsController {
 
     const created = await this.creator.createMany({
       board,
-      lists: customLists.map((l) => ({
+      lists: customLists.map((l: { name: any; visibility: any }) => ({
         name: l.name,
         visibility: l.visibility ?? BoardListVisibility.Showed,
       })),

@@ -9,7 +9,8 @@ const WorkspacePagesController = () => import('#controllers/workspace_pages_cont
 
 // 🆕 Lists / Kanban
 const ListsController = () => import('#controllers/board_type_controller/kanban/lists_controller')
-const BoardListsController = () => import('#controllers/board_type_controller/kanban/board_lists_controller')
+const BoardListsController = () =>
+  import('#controllers/board_type_controller/kanban/board_lists_controller')
 
 router.on('/').renderInertia('home')
 router.on('/auth').renderInertia('auth/auth_page')

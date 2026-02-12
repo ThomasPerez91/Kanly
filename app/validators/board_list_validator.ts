@@ -1,3 +1,4 @@
+import vine from '@vinejs/vine'
 import { BoardListVisibility } from '#enums/board_list_visibility'
 
 export const createBoardListValidator = vine.compile(

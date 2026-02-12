@@ -35,60 +35,53 @@ export const KanbanGenerateForm: FC<Props> = ({
   }
 
   return (
-    <div className="space-y-4">
-      {/* Mode switch */}
-      <div className="flex gap-2">
+    <div className="space-y-8 max-w-md">
+      {/* Segmented toggle */}
+      <div className="inline-flex p-1 rounded-xl bg-bg border border-border shadow-soft">
         <Button
-          variant={mode === 'default' ? 'primary' : 'secondary'}
-          size="md"
+          variant={mode === 'default' ? 'primary' : 'ghost'}
+          size="sm"
+          label="Default"
           onClick={() => onModeChange('default')}
-        >
-          Default
-        </Button>
+        />
 
         <Button
-          variant={mode === 'custom' ? 'primary' : 'secondary'}
-          size="md"
+          variant={mode === 'custom' ? 'primary' : 'ghost'}
+          size="sm"
+          label="Custom"
           onClick={() => onModeChange('custom')}
-        >
-          Custom
-        </Button>
+        />
       </div>
 
       {mode === 'custom' && (
-        <div className="space-y-2">
+        <div className="space-y-4">
           {listNames.map((name, i) => (
-            <div key={i}>
-              <input
-                value={name}
-                onChange={(e) => updateName(i, e.target.value)}
-                placeholder={`List name ${i + 1}`}
-                className="input"
-              />
-            </div>
+            <input
+              key={i}
+              value={name}
+              onChange={(e) => updateName(i, e.target.value)}
+              placeholder={`List name ${i + 1}`}
+              className="input"
+            />
           ))}
 
-          <Button variant="ghost" size="sm" onClick={addInput}>
-            + Add list
-          </Button>
+          <Button variant="ghost" size="sm" label="+ Add another column" onClick={addInput} />
         </div>
       )}
 
       {error && <div className="error">{error}</div>}
 
-      <div className="flex gap-2 pt-4">
-        <Button variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
+      <div className="flex gap-3 pt-4">
+        <Button variant="secondary" label="Cancel" onClick={onCancel} />
 
         <Button
           variant="primary"
+          label="Generate"
           loading={submitting}
           disabled={!isValid}
           onClick={onSubmit}
-        >
-          Generate
-        </Button>
+          elevated
+        />
       </div>
     </div>
   )

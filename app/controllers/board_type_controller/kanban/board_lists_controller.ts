@@ -61,9 +61,11 @@ export default class BoardListsController {
       lists: lists.map(boardListToPublicDto),
     }
 
-    if (request.accepts(['json'])) return props
+    const accepted = request.accepts(['json', 'html'])
+    if (accepted === 'json') {
+      return response.ok(props)
+    }
 
-    // TODO: ajuste au vrai path inertia (ex: 'workspace/board/kanban' etc.)
     return inertia.render('board/kanban', props)
   }
 
@@ -174,7 +176,7 @@ export default class BoardListsController {
 
     const created = await this.creator.createMany({
       board,
-      lists: customLists.map((l: { name: any; visibility: any }) => ({
+      lists: customLists.map((l) => ({
         name: l.name,
         visibility: l.visibility ?? BoardListVisibility.Showed,
       })),

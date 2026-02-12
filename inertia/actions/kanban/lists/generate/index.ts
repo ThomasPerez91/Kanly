@@ -5,7 +5,7 @@ import type { InputType, ReturnType } from './type'
 
 export const generateKanbanListsAction = (csrfToken: string) =>
   createSafeAction<InputType, ReturnType>(GenerateKanbanListsSchema, async (data) => {
-    const body =
+    const payload =
       data.mode === 'default'
         ? { mode: 'default' as const }
         : {
@@ -13,15 +13,12 @@ export const generateKanbanListsAction = (csrfToken: string) =>
             lists: data.lists ?? [],
           }
 
-    const res = await http.post<ReturnType>(
+    const res = await http.post<ReturnType, typeof payload>(
       `/boards/${data.boardId}/kanban/lists/generate`,
-      {
-        csrfToken,
-        body,
-      }
+      payload,
+      { csrfToken }
     )
 
     if (!res.ok) return { error: res.error }
-
     return { data: res.data }
   })

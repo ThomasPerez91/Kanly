@@ -63,7 +63,7 @@ export const http = {
     const method = options.method ?? 'GET'
 
     const headers: Record<string, string> = {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       // Helps many backends return JSON errors instead of HTML
       'X-Requested-With': 'XMLHttpRequest',
       ...options.headers,
@@ -113,7 +113,7 @@ export const http = {
       }
 
       // Parse JSON only when it makes sense (or try-parse safely)
-      let payload: any = undefined
+      let payload: any
 
       if (contentType.includes('application/json')) {
         const parsed = safeJsonParse(raw)

@@ -1,11 +1,12 @@
 import type { FC } from 'react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+import { router } from '@inertiajs/react'
 
 import type { KanbanGenerateModalProps } from './kanban_generate_modal_type'
 
 import { Modal } from '~/components/ui/modal/modal'
-import { Button } from '~/components/ui/button/button'
 import { useAuthUser } from '~/hooks/auth_user/use_auth_user'
+import { useAction } from '~/hooks/utils/use_action'
 import { generateKanbanListsAction } from '~/actions/kanban/lists/generate'
 
 import { KanbanGenerateForm } from './kanban_generate_form'
@@ -18,87 +19,56 @@ export const KanbanGenerateModal: FC<KanbanGenerateModalProps> = ({
   boardId,
   board,
   onClose,
-  onGenerated,
 }) => {
   const { csrfToken } = useAuthUser()
-  const action = useMemo(() => generateKanbanListsAction(csrfToken), [csrfToken])
+  const action = generateKanbanListsAction(csrfToken)
 
   const [mode, setMode] = useState<Mode>('default')
   const [listNames, setListNames] = useState<string[]>([''])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const reset = () => {
-    setMode('default')
-    setListNames([''])
-    setIsSubmitting(false)
-    setError(null)
-  }
-
-  const close = () => {
-    reset()
-    onClose()
-  }
+  const { execute, isLoading, error } = useAction(action, {
+    onSuccess: () => {
+      router.reload({ preserveUrl: true })
+    },
+  })
 
   const trimmed = listNames.map((n) => n.trim())
   const validCustom = trimmed.filter((n) => n.length > 0)
 
-  const isValid =
-    mode === 'default' ||
-    (mode === 'custom' && validCustom.length > 0)
+  const isValid = mode === 'default' || (mode === 'custom' && validCustom.length > 0)
 
   const onSubmit = async () => {
-    if (isSubmitting || !isValid) return
+    if (!isValid) return
 
-    setIsSubmitting(true)
-    setError(null)
-
-    const res = await action({
+    await execute({
       boardId,
       mode,
-      lists:
-        mode === 'custom'
-          ? validCustom.map((name) => ({ name }))
-          : undefined,
+      lists: mode === 'custom' ? validCustom.map((name) => ({ name })) : undefined,
     })
-
-    setIsSubmitting(false)
-
-    if (res.error) {
-      setError(res.error)
-      return
-    }
-
-    onGenerated?.()
-    close()
   }
 
   return (
     <Modal
       open={open}
-      onClose={close}
+      onClose={onClose}
       title="Generate lists"
       description="Choose default or create custom columns."
-      widthClassName="max-w-[980px]"
+      widthClassName="max-w-[1100px]"
     >
-      <div className="board-create-grid">
+      <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_480px] items-start">
         <KanbanGenerateForm
           mode={mode}
           onModeChange={setMode}
           listNames={listNames}
           onListNamesChange={setListNames}
-          submitting={isSubmitting}
-          error={error}
+          submitting={isLoading}
+          error={error ?? null}
           isValid={isValid}
-          onCancel={close}
+          onCancel={onClose}
           onSubmit={onSubmit}
         />
 
-        <KanbanGeneratePreview
-          mode={mode}
-          board={board}
-          listNames={trimmed}
-        />
+        <KanbanGeneratePreview mode={mode} board={board} listNames={trimmed} />
       </div>
     </Modal>
   )

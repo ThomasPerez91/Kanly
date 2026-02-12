@@ -6,7 +6,10 @@ import BoardList from '#models/board_list'
 import Workspace from '#models/workspace'
 
 import { boardListToPublicDto } from '#dtos/list/board_list_public_dto'
-import { createBoardListValidator, updateBoardListValidator } from '#validators/board_list_validator'
+import {
+  createBoardListValidator,
+  updateBoardListValidator,
+} from '#validators/board_list_validator'
 import { BoardListVisibility } from '#enums/board_list_visibility'
 import { ListCreator } from '#services/lists/list_creator'
 

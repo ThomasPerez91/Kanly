@@ -110,7 +110,7 @@ export const BoardsSection: FC<BoardsSectionProps> = ({ workspaceId }) => {
             {boards.map((b) => (
               // ✅ wrapper pour appliquer hover/ombre sans dépendre du contenu interne
               <div key={b.id} className="board-card board-card-size board-card-hover">
-                <BoardCard board={b} />
+                <BoardCard board={b} onClick={(id) => router.visit(`/boards/${id}/kanban`)} />
               </div>
             ))}
 

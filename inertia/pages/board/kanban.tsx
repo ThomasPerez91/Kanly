@@ -1,5 +1,6 @@
 import type { FC } from 'react'
-import { usePage } from '@inertiajs/react'
+import { useState } from 'react'
+import { usePage, router } from '@inertiajs/react'
 
 import type { BoardPublic } from '~/lib/types/board_public'
 import type { BoardListPublic } from '~/lib/types/board_list_public'
@@ -17,19 +18,23 @@ const BoardKanbanPage: FC = () => {
   const { props } = usePage<PageProps>()
   const { boardId, board, lists } = props
 
+  // open par défaut si aucune list
+  const [isGenerateOpen, setIsGenerateOpen] = useState(lists.length === 0)
+
   return (
     <>
       <KanbanBoard board={board} lists={lists} />
 
-      {lists.length === 0 && (
-        <KanbanGenerateModal
-          open
-          boardId={boardId}
-          board={board}
-          onClose={() => {}}
-          onGenerated={() => window.location.reload()}
-        />
-      )}
+      <KanbanGenerateModal
+        open={isGenerateOpen}
+        boardId={boardId}
+        board={board}
+        onClose={() => setIsGenerateOpen(false)}
+        onGenerated={() => {
+          setIsGenerateOpen(false)
+          router.reload({ preserveUrl: true })
+        }}
+      />
     </>
   )
 }

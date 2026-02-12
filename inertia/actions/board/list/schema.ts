@@ -1,5 +1,5 @@
 import { z } from 'zod'
 
-export const BoardListSchema = z.object({
+export const ListBoardsSchema = z.object({
   workspaceId: z.number().int().positive(),
 })
